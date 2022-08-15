@@ -3,6 +3,7 @@ import createDynamoDBClient from "../../config/db.config";
 import logger from "../../utils/logger";
 import { STAUS } from "../../constants/application.constant";
 import UserAccount from "../../models/userAccount.model";
+import User from "../../models/userInput.model";
 
 class UserAccountData {
   constructor(
@@ -26,6 +27,33 @@ class UserAccountData {
         `There was an error while persisting data to ${this.tableName}`
       );
     }
+  }
+
+  async fetchUserAccounts(userDetails: User) {
+    const params = {
+      TableName: this.tableName,
+      KeyConditionExpression: "#userID = :userID",
+
+      FilterExpression: "#account_status = :account_status",
+      ExpressionAttributeNames: {
+        "#userID": "userID",
+        "#account_status": "account_status"
+      },
+      ExpressionAttributeValues: {
+        ":account_status": STAUS.ACTIVE,
+        ":userID": userDetails.userID
+      }
+    };
+
+    const data = await this.docClient.query(params).promise();
+    console.log(data);
+    logger.info(data);
+    if (!data || !data.Items.length) {
+      logger.info("No data found");
+      return null;
+    }
+
+    return data.Items;
   }
 }
 

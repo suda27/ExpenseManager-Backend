@@ -93,6 +93,14 @@ functions:
           path: /api/em-create-userAccount
           method: POST
           cors: true
+  fetchUserAccountsApi:
+    handler: src/api/useraccount/fetchUserAccountsApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-fetch-userAccounts
+    events:
+      - http:
+          path: /api/em-fetch-userAccounts
+          method: POST
+          cors: true
 
 resources:
   Resources:

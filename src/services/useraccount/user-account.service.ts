@@ -7,6 +7,7 @@ import userAccountData from "../../data/useraccount/user-account.data";
 import userService from "../user/user.service";
 import { STAUS } from "../../constants/application.constant";
 import UserAccount from "../../models/userAccount.model";
+import { fetchUserAccountsApi } from "../../api/useraccount/fetchUserAccountsApi";
 
 class UserAccountService {
   constructor(
@@ -40,6 +41,20 @@ class UserAccountService {
       const response = await userAccountData.createUserAccount(
         userAccountDetails
       );
+      return response;
+    } catch (err) {
+      logger.error(
+        "Error at the Data layer, Caught at User Account Service",
+        err
+      );
+      throw Error(`Error at the Data layer, Caught at User Account Service`);
+    }
+  }
+
+  async fetchUserAccounts(userDetails: User) {
+    try {
+      logger.info("fetchUserAccounts at User Account Service");
+      const response = await userAccountData.fetchUserAccounts(userDetails);
       return response;
     } catch (err) {
       logger.error(
