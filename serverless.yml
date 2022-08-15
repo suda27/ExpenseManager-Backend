@@ -13,6 +13,7 @@ package:
 custom:
   projectname: em
   usertable: ${self:custom.projectname}-${sls:stage}-user
+  userAccountTable: ${self:custom.projectname}-${sls:stage}-user-account
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
@@ -30,6 +31,7 @@ provider:
       executionLogging: false
   environment:
     USER_TABLE: ${self:custom.usertable}
+    USER_ACCOUNT_TABLE: ${self:custom.userAccountTable}
   iam:
     role:
       name: tsbe-lambda-execution-role-${sls:stage}
@@ -75,6 +77,22 @@ functions:
           path: /api/em-update-user
           method: PUT
           cors: true
+  deleteUserApi:
+    handler: src/api/user/deleteUserApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-delete-user
+    events:
+      - http:
+          path: /api/em-delete-user
+          method: DELETE
+          cors: true
+  createUserAccountApi:
+    handler: src/api/useraccount/createUserAccountApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-create-userAccount
+    events:
+      - http:
+          path: /api/em-create-userAccount
+          method: POST
+          cors: true
 
 resources:
   Resources:
@@ -88,4 +106,20 @@ resources:
         KeySchema:
           - AttributeName: "userID"
             KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+
+    EM_USER_ACCOUNT_TABLE:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.userAccountTable}
+        AttributeDefinitions:
+          - AttributeName: "userID"
+            AttributeType: "S"
+          - AttributeName: "accountID"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "userID"
+            KeyType: "HASH"
+          - AttributeName: "accountID"
+            KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST

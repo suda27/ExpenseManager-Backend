@@ -30,6 +30,7 @@ class UserData {
 
   async updateUserDetails(userDeatils: User) {
     logger.info("updateUserDetails method in UserData", userDeatils);
+    console.log("updateUserDetails method in UserData", userDeatils);
     try {
       const initialParams = {
         TableName: this.tableName,

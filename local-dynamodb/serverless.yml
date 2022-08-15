@@ -34,6 +34,8 @@ plugins:
 custom:
   projectname: em
   usertable: ${self:custom.projectname}-${sls:stage}-user
+  userAccountTable: ${self:custom.projectname}-${sls:stage}-user-account
+
   dynamodb:
     stages:
       - offline
@@ -132,7 +134,7 @@ resources:
     #         KeyType: "RANGE"
     #     BillingMode: PAY_PER_REQUEST
 
-    EMUSERACCOUNTTABLE:
+    EM_USER_TABLE:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.usertable}
@@ -142,4 +144,20 @@ resources:
         KeySchema:
           - AttributeName: "userID"
             KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+
+    EM_USER_ACCOUNT_TABLE:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.userAccountTable}
+        AttributeDefinitions:
+          - AttributeName: "userID"
+            AttributeType: "S"
+          - AttributeName: "accountID"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "userID"
+            KeyType: "HASH"
+          - AttributeName: "accountID"
+            KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST

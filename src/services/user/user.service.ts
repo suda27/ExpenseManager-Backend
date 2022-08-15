@@ -73,13 +73,15 @@ class UserService {
     if (!existingUser) {
       return null;
     }
+    const inactiveUser = existingUser[0];
+    inactiveUser.status = STAUS.INACTIVE;
 
     const updateUser: User = constructUpdateUserDetailsData(
-      existingUser,
+      inactiveUser,
       userDeatils
     );
     try {
-      /* Create user */
+      /* Update user */
       const response = await userData.updateUserDetails(updateUser);
       return response;
     } catch (err) {
@@ -107,6 +109,7 @@ class UserService {
     try {
       /* Get user list by ID */
       const userList = await userData.getUsersByID(userID);
+      console.log("after fetching user with user id", userList);
       return userList;
     } catch (err) {
       logger.error("Error at the Data layer, Caught at User Service", err);
