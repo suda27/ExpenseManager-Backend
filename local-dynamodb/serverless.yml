@@ -1,0 +1,145 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: local-dynamodb
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  environment:
+    USER_TABLE: ${self:custom.usertable}
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  projectname: em
+  usertable: ${self:custom.projectname}-${sls:stage}-user
+  dynamodb:
+    stages:
+      - offline
+      - dev
+    start:
+      convertEmptyValues: true
+      heapInitial: 200m
+      heapMax: 1g
+      inMemory: true
+      migrate: true
+      migration: true
+      port: 8000
+      seed: false
+    migration:
+      dir: offline/migrations
+
+resources:
+  Resources:
+    # ConnectTable:
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: rightstart-aws-connect-${opt:stage}
+    #     AttributeDefinitions:
+    #       - AttributeName: "PK"
+    #         AttributeType: "S"
+    #       - AttributeName: "SK"
+    #         AttributeType: "S"
+    #       - AttributeName: "agentId"
+    #         AttributeType: "S"
+    #       - AttributeName: "entityType"
+    #         AttributeType: "S"
+    #     KeySchema:
+    #       - AttributeName: "PK"
+    #         KeyType: "HASH"
+    #       - AttributeName: "SK"
+    #         KeyType: "RANGE"
+    #     GlobalSecondaryIndexes:
+    #       - IndexName: "GSI1"
+    #         KeySchema:
+    #           - AttributeName: "agentId"
+    #             KeyType: "HASH"
+    #         Projection:
+    #           ProjectionType: ALL
+    #       - IndexName: "GSI2"
+    #         KeySchema:
+    #           - AttributeName: "entityType"
+    #             KeyType: "HASH"
+    #         Projection:
+    #           ProjectionType: ALL
+    #     BillingMode: PAY_PER_REQUEST
+
+    # ConnectMetricTable:
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: RightStart-AWS-Connect-Metric-${opt:stage}
+    #     AttributeDefinitions:
+    #       - AttributeName: "connectId"
+    #         AttributeType: "S"
+    #       - AttributeName: "queueId"
+    #         AttributeType: "S"
+    #     KeySchema:
+    #       - AttributeName: "connectId"
+    #         KeyType: "HASH"
+    #       - AttributeName: "queueId"
+    #         KeyType: "RANGE"
+    #     BillingMode: PAY_PER_REQUEST
+    # CallTable:
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: rightstart-aws-call-${opt:stage}
+    #     AttributeDefinitions:
+    #       - AttributeName: "PK"
+    #         AttributeType: "S"
+    #       - AttributeName: "SK"
+    #         AttributeType: "S"
+    #     KeySchema:
+    #       - AttributeName: "PK"
+    #         KeyType: "HASH"
+    #       - AttributeName: "SK"
+    #         KeyType: "RANGE"
+    #     BillingMode: PAY_PER_REQUEST
+
+    # SurveyTable:
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: rightstart-aws-connect-survey-${opt:stage}
+    #     AttributeDefinitions:
+    #       - AttributeName: "PK"
+    #         AttributeType: "S"
+    #       - AttributeName: "SK"
+    #         AttributeType: "S"
+    #     KeySchema:
+    #       - AttributeName: "PK"
+    #         KeyType: "HASH"
+    #       - AttributeName: "SK"
+    #         KeyType: "RANGE"
+    #     BillingMode: PAY_PER_REQUEST
+
+    EMUSERACCOUNTTABLE:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.usertable}
+        AttributeDefinitions:
+          - AttributeName: "userID"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "userID"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST

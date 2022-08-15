@@ -1,0 +1,21 @@
+export const CURRENCY = {
+  INR: "INR",
+  USD: "USD",
+  SGD: "SGD",
+  MYR: "MYR",
+  EUR: "EUR",
+  AUD: "AUD",
+  JPY: "JPY",
+  CNH: "CNH",
+  HKD: "HKD",
+  CAD: "CAD",
+  DKK: "DKK",
+  GBP: "GBP",
+  RUB: "RUB",
+  NZD: "NZD",
+  MXN: "MXN",
+  IDR: "IDR",
+  TWD: "TWD",
+  THB: "THB",
+  VND: "VND"
+};

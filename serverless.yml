@@ -1,0 +1,74 @@
+service: em-ts-backend
+
+frameworkVersion: "2"
+plugins:
+  - serverless-plugin-resource-tagging
+  - serverless-webpack
+  - serverless-dynamodb-local
+  - serverless-offline
+  - serverless-offline-scheduler
+package:
+  individually: true
+
+custom:
+  projectname: em
+  usertable: ${self:custom.projectname}-${sls:stage}-user
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'offline'}
+  region: ${opt:region, 'us-east-1'}
+  lambdaHashingVersion: 20201221
+  memorySize: 128
+  timeout: 30
+  endpointType: regional
+  logs:
+    restApi:
+      executionLogging: false
+  environment:
+    USER_TABLE: ${self:custom.usertable}
+  iam:
+    role:
+      name: tsbe-lambda-execution-role-${sls:stage}
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+            - s3:*
+            - lambda:*
+          Resource: "*"
+
+functions:
+  helloworld:
+    handler: src/api/user/helloWorld.handler
+    name: ${self:custom.projectname}-${sls:stage}-lambda-helloWorld
+    events:
+      - http:
+          path: /api/helloworld
+          method: GET
+          cors: true
+  userApi:
+    handler: src/api/user/userapi.handler
+    name: ${self:custom.projectname}-${sls:stage}-user
+    events:
+      - http:
+          path: /api/em-user
+          method: POST
+          cors: true
+
+resources:
+  Resources:
+    EmUserTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.usertable}
+        AttributeDefinitions:
+          - AttributeName: "userID"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "userID"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST

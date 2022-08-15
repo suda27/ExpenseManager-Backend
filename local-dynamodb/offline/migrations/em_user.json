@@ -1,0 +1,69 @@
+{
+    "Table": {
+        "TableName": "em_user",
+        "KeySchema": [
+            {
+                "AttributeName": "userID",
+                "KeyType": "HASH"
+            },
+            {
+                "AttributeName": "email",
+                "KeyType": "RANGE"
+            },
+            {
+                "AttributeName": "name",
+                "KeyType": "S"
+            },
+            {
+                "AttributeName": "profile_pic",
+                "KeyType": "S"
+            },
+            {
+                "AttributeName": "currency",
+                "KeyType": "S"
+            },
+            {
+                "AttributeName": "status",
+                "KeyType": "S"
+            },
+            {
+                "AttributeName": "created_date",
+                "KeyType": "S"
+            }
+        ],
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "userID",
+                "KeyType": "HASH"
+            },
+            {
+                "AttributeName": "email",
+                "KeyType": "RANGE"
+            },
+            {
+                "AttributeName": "name",
+                "KeyType": "S"
+            },
+            {
+                "AttributeName": "profile_pic",
+                "KeyType": "S"
+            },
+            {
+                "AttributeName": "currency",
+                "KeyType": "S"
+            },
+            {
+                "AttributeName": "status",
+                "KeyType": "S"
+            },
+            {
+                "AttributeName": "created_date",
+                "KeyType": "S"
+            }
+        ],
+        "ProvisionedThroughput": {
+            "ReadCapacityUnits": 5,
+            "WriteCapacityUnits": 5
+        }
+    }
+}

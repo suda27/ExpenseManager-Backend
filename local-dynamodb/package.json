@@ -1,0 +1,15 @@
+{
+    "name": "local-dynamodb",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+        "offline:db": "sls dynamodb start --stage offline",
+        "offline:install": "sls dynamodb install -s offline"
+    },
+    "dependencies": {
+        "serverless": "^2.43.1",
+        "serverless-dynamodb-local": "0.2.30",
+        "serverless-offline": "^6.9.0"
+    }
+}
