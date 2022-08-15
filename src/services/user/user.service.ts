@@ -24,12 +24,54 @@ class UserService {
 
     /* Set attributes Created_date, Status and generate UserID */
     userDeatils.created_date = new Date().toLocaleString();
+    userDeatils.updated_date = new Date().toLocaleString();
     userDeatils.status = STAUS.ACTIVE;
     userDeatils.userID = uuidv4();
 
     try {
       /* Create user */
       const response = await userData.createUser(userDeatils);
+      return response;
+    } catch (err) {
+      logger.error("Error at the Data layer, Caught at User Service", err);
+      throw Error(`Error at the Data layer, Caught at User Service`);
+    }
+  }
+
+  async updateUser(userDeatils: User) {
+    logger.info("updateUser method of UserService", userDeatils);
+
+    /* Check if user exists */
+    const existingUser = await this.getUserById(userDeatils.userID);
+    if (!existingUser) {
+      return null;
+    }
+
+    const updateUser: User = {
+      userID: existingUser.userID,
+      currency:
+        existingUser.currency == userDeatils.currency
+          ? existingUser.currency
+          : userDeatils.currency,
+      name:
+        existingUser.name == userDeatils.name
+          ? existingUser.name
+          : userDeatils.name,
+      profile_pic:
+        existingUser.profile_pic == userDeatils.profile_pic
+          ? existingUser.profile_pic
+          : userDeatils.profile_pic,
+      email: existingUser.email,
+      status:
+        existingUser.status === userDeatils.status
+          ? existingUser.status
+          : userDeatils.status,
+      created_date: existingUser.created_date,
+      updated_date: new Date().toLocaleString()
+    };
+    try {
+      /* Create user */
+      const response = await userData.updateUserDetails(updateUser);
       return response;
     } catch (err) {
       logger.error("Error at the Data layer, Caught at User Service", err);

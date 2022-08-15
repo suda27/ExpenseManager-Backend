@@ -10,7 +10,7 @@ class UserData {
   ) {}
 
   async createUser(userDeatils: User) {
-    logger.info("userData method in UserData", userDeatils);
+    logger.info("createUser method in UserData", userDeatils);
     try {
       const initialParams = {
         TableName: this.tableName,
@@ -23,6 +23,24 @@ class UserData {
       logger.error("Error occured while persisting data", error);
       throw Error(
         `There was an error while persisting data to ${this.tableName}`
+      );
+    }
+  }
+
+  async updateUserDetails(userDeatils: User) {
+    logger.info("updateUserDetails method in UserData", userDeatils);
+    try {
+      const initialParams = {
+        TableName: this.tableName,
+        Item: userDeatils
+      };
+      await this.docClient.put(initialParams).promise();
+      logger.info("User data updated successfuly");
+      return userDeatils;
+    } catch (error) {
+      logger.error("Error occured while persisting data", error);
+      throw Error(
+        `There was an error while updating data to ${this.tableName}`
       );
     }
   }

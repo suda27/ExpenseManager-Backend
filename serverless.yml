@@ -67,6 +67,14 @@ functions:
           path: /api/em-get-user
           method: POST
           cors: true
+  updateUserApi:
+    handler: src/api/user/updateUserApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-update-user
+    events:
+      - http:
+          path: /api/em-update-user
+          method: PUT
+          cors: true
 
 resources:
   Resources:

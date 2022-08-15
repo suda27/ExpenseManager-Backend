@@ -8,6 +8,7 @@ interface User {
   profile_pic: string;
   status: string;
   created_date: string;
+  updated_date: string;
 }
 
 export default User;
