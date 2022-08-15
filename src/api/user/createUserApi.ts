@@ -7,7 +7,7 @@ import { formatJSONResponse } from "../../utils/ResponseUtils";
 import userService from "../../services/user/user.service";
 import User from "../../models/userInput.model";
 
-export class userApi {
+export class createUserApi {
   /*
   This lambda function will return basic details of the User
   */
@@ -18,9 +18,13 @@ export class userApi {
         logger.info("At the userAPI ", userDeatils);
         const response = await userService.createUser(userDeatils);
         resolve(
-          formatJSONResponse(HTTP.SUCCESS, "User Data Saved Successfully", {
+          formatJSONResponse(
+            HTTP.SUCCESS,
+            response != null
+              ? "User Data Saved Successfully"
+              : "User Already Exist in the System",
             response
-          })
+          )
         );
       } catch (err) {
         reject(formatErrorJSONResponse(HTTP.SYSTEM_ERROR, err.message, err));
@@ -28,4 +32,4 @@ export class userApi {
     });
   }
 }
-export const handler = userApi.handler;
+export const handler = createUserApi.handler;

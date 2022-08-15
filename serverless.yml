@@ -51,12 +51,20 @@ functions:
           path: /api/helloworld
           method: GET
           cors: true
-  userApi:
-    handler: src/api/user/userapi.handler
-    name: ${self:custom.projectname}-${sls:stage}-user
+  createUserApi:
+    handler: src/api/user/createUserApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-create-user
     events:
       - http:
-          path: /api/em-user
+          path: /api/em-create-user
+          method: POST
+          cors: true
+  getUserApi:
+    handler: src/api/user/getUserApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-get-user
+    events:
+      - http:
+          path: /api/em-get-user
           method: POST
           cors: true
 

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "local": "sls offline start -s offline"
+    "local": "sls offline start -s offline",
+    "dev": "sls deploy -s dev"
   },
   "author": "",
   "license": "ISC",
