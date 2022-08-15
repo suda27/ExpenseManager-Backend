@@ -39,6 +39,7 @@ provider:
             - dynamodb:*
             - s3:*
             - lambda:*
+            - cloudformation:*
           Resource: "*"
 
 functions:
