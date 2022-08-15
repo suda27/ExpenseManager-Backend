@@ -29,12 +29,40 @@ class UserAccountData {
     }
   }
 
+  async fetchSingleUserAccount(accountID: string) {
+    const params = {
+      TableName: this.tableName,
+      KeyConditionExpression: "#accountID = :accountID",
+
+      FilterExpression: "#account_status = :account_status",
+      ExpressionAttributeNames: {
+        "#accountID": "accountID",
+        "#account_status": "account_status"
+      },
+      ExpressionAttributeValues: {
+        ":account_status": STAUS.ACTIVE,
+        ":accountID": accountID
+      }
+    };
+
+    console.log(params);
+
+    const data = await this.docClient.query(params).promise();
+    console.log(data);
+    logger.info(data);
+    if (!data || !data.Items.length) {
+      logger.info("No data found");
+      return null;
+    }
+
+    return data.Items;
+  }
+
   async fetchUserAccounts(userDetails: User) {
     const params = {
       TableName: this.tableName,
-      KeyConditionExpression: "#userID = :userID",
-
-      FilterExpression: "#account_status = :account_status",
+      FilterExpression:
+        "#account_status = :account_status and #userID =:userID",
       ExpressionAttributeNames: {
         "#userID": "userID",
         "#account_status": "account_status"
@@ -45,7 +73,13 @@ class UserAccountData {
       }
     };
 
-    const data = await this.docClient.query(params).promise();
+    const data = await this.docClient
+      .scan(params, function(err, data) {
+        if (err) {
+          console.log(err);
+        }
+      })
+      .promise();
     console.log(data);
     logger.info(data);
     if (!data || !data.Items.length) {

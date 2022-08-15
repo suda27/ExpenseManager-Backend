@@ -64,6 +64,22 @@ class UserAccountService {
       throw Error(`Error at the Data layer, Caught at User Account Service`);
     }
   }
+
+  async fetchSingleUserAccount(accountID: string) {
+    try {
+      logger.info("fetchSingleUserAccount at User Account Service");
+      console.log(accountID);
+      const response = await userAccountData.fetchSingleUserAccount(accountID);
+      return response;
+    } catch (err) {
+      console.log(err);
+      logger.error(
+        "Error at the Data layer, Caught at User Account Service",
+        err
+      );
+      throw Error(`Error at the Data layer, Caught at User Account Service`);
+    }
+  }
 }
 
 const userAccountService = new UserAccountService(

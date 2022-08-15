@@ -101,6 +101,14 @@ functions:
           path: /api/em-fetch-userAccounts
           method: POST
           cors: true
+  fetchSingleUserAccountsApi:
+    handler: src/api/useraccount/fetchSingleUserAccountApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-fetch-singleUserAccounts
+    events:
+      - http:
+          path: /api/em-fetch-singleUserAccounts
+          method: POST
+          cors: true
 
 resources:
   Resources:
