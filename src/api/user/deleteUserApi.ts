@@ -7,7 +7,7 @@ import { formatJSONResponse } from "../../utils/ResponseUtils";
 import userService from "../../services/user/user.service";
 import User from "../../models/userInput.model";
 
-export class createUserApi {
+export class deleteUserApi {
   /*
   This lambda function will return basic details of the User
   */
@@ -16,13 +16,13 @@ export class createUserApi {
       try {
         const userDeatils: User = JSON.parse(event.body);
         logger.info("At the userAPI ", userDeatils);
-        const response = await userService.createUser(userDeatils);
+        const response = await userService.deleteUser(userDeatils);
         resolve(
           formatJSONResponse(
             response != null ? HTTP.SUCCESS : HTTP.BAD_REQUEST,
             response != null
-              ? "User Data Saved Successfully"
-              : "User Already Exist in the System",
+              ? "User Data Deleted Successfully"
+              : "Failed to Delete User Data, Since User doesn't exist",
             response
           )
         );
@@ -32,4 +32,4 @@ export class createUserApi {
     });
   }
 }
-export const handler = createUserApi.handler;
+export const handler = deleteUserApi.handler;

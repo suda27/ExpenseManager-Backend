@@ -2,6 +2,7 @@ import User from "../../models/userInput.model";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import createDynamoDBClient from "../../config/db.config";
 import logger from "../../utils/logger";
+import { STAUS } from "../../constants/application.constant";
 
 class UserData {
   constructor(
@@ -76,19 +77,28 @@ class UserData {
   async getUsersByID(userID: string) {
     const params = {
       TableName: this.tableName,
-      Key: {
-        userID
+      KeyConditionExpression: "#userID = :userID",
+
+      FilterExpression: "#status = :status",
+      ExpressionAttributeNames: {
+        "#userID": "userID",
+        "#status": "status"
+      },
+      ExpressionAttributeValues: {
+        ":status": STAUS.ACTIVE,
+        ":userID": userID
       }
     };
 
-    const data = await this.docClient.get(params).promise();
+    const data = await this.docClient.query(params).promise();
+    console.log(data);
     logger.info(data);
-    if (!data || !data.Item) {
+    if (!data || !data.Items.length) {
       logger.info("No data found");
       return null;
     }
 
-    return data.Item;
+    return data.Items;
   }
 }
 

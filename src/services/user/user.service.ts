@@ -12,6 +12,7 @@ class UserService {
     private readonly tableName: string
   ) {}
 
+  // Create User
   async createUser(userDeatils: User) {
     logger.info("createUser method of UserService", userDeatils);
 
@@ -38,37 +39,21 @@ class UserService {
     }
   }
 
+  // Update User
   async updateUser(userDeatils: User) {
     logger.info("updateUser method of UserService", userDeatils);
 
     /* Check if user exists */
     const existingUser = await this.getUserById(userDeatils.userID);
+    console.log("Okay exisintg user check -->", existingUser);
     if (!existingUser) {
       return null;
     }
 
-    const updateUser: User = {
-      userID: existingUser.userID,
-      currency:
-        existingUser.currency == userDeatils.currency
-          ? existingUser.currency
-          : userDeatils.currency,
-      name:
-        existingUser.name == userDeatils.name
-          ? existingUser.name
-          : userDeatils.name,
-      profile_pic:
-        existingUser.profile_pic == userDeatils.profile_pic
-          ? existingUser.profile_pic
-          : userDeatils.profile_pic,
-      email: existingUser.email,
-      status:
-        existingUser.status === userDeatils.status
-          ? existingUser.status
-          : userDeatils.status,
-      created_date: existingUser.created_date,
-      updated_date: new Date().toLocaleString()
-    };
+    const updateUser: User = constructUpdateUserDetailsData(
+      existingUser[0],
+      userDeatils
+    );
     try {
       /* Create user */
       const response = await userData.updateUserDetails(updateUser);
@@ -79,6 +64,31 @@ class UserService {
     }
   }
 
+  // Delete User
+  async deleteUser(userDeatils: User) {
+    logger.info("deleteUser method of UserService", userDeatils);
+
+    /* Check if user exists */
+    const existingUser = await this.getUserById(userDeatils.userID);
+    if (!existingUser) {
+      return null;
+    }
+
+    const updateUser: User = constructUpdateUserDetailsData(
+      existingUser,
+      userDeatils
+    );
+    try {
+      /* Create user */
+      const response = await userData.updateUserDetails(updateUser);
+      return response;
+    } catch (err) {
+      logger.error("Error at the Data layer, Caught at User Service", err);
+      throw Error(`Error at the Data layer, Caught at User Service`);
+    }
+  }
+
+  // Get User By Email
   async getUserByEmail(email: string) {
     logger.info("getUserByEmail method of UserService");
     try {
@@ -91,10 +101,11 @@ class UserService {
     }
   }
 
+  // Get User By ID
   async getUserById(userID: string) {
-    logger.info("getUserByEmail method of UserService");
+    logger.info("getUserByID method of UserService");
     try {
-      /* Get user list by email */
+      /* Get user list by ID */
       const userList = await userData.getUsersByID(userID);
       return userList;
     } catch (err) {
@@ -108,4 +119,36 @@ const userService = new UserService(
   createDynamoDBClient(),
   process.env.USER_TABLE
 );
+
 export default userService;
+
+/* 
+Helper Functions of User Services
+*/
+function constructUpdateUserDetailsData(
+  existingUser: DocumentClient.AttributeMap,
+  userDeatils: User
+): User {
+  return {
+    userID: existingUser.userID,
+    currency:
+      existingUser.currency == userDeatils.currency
+        ? existingUser.currency
+        : userDeatils.currency,
+    name:
+      existingUser.name == userDeatils.name
+        ? existingUser.name
+        : userDeatils.name,
+    profile_pic:
+      existingUser.profile_pic == userDeatils.profile_pic
+        ? existingUser.profile_pic
+        : userDeatils.profile_pic,
+    email: existingUser.email,
+    status:
+      existingUser.status === userDeatils.status
+        ? existingUser.status
+        : userDeatils.status,
+    created_date: existingUser.created_date,
+    updated_date: new Date().toLocaleString()
+  };
+}

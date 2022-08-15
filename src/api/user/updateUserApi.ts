@@ -15,14 +15,14 @@ export class updateUserApi {
     return new Promise(async (resolve, reject) => {
       try {
         const userDeatils: User = JSON.parse(event.body);
-        logger.info("At the userAPI ", userDeatils);
+        logger.info("At the Update userAPI ", userDeatils);
         const response = await userService.updateUser(userDeatils);
         resolve(
           formatJSONResponse(
-            HTTP.SUCCESS,
+            response != null ? HTTP.SUCCESS : HTTP.BAD_REQUEST,
             response != null
-              ? "User Data Saved Successfully"
-              : "User Already Exist in the System",
+              ? "User Data Updated Successfully"
+              : "Failed to Update User Data, Since User doesn't exist",
             response
           )
         );

@@ -15,13 +15,13 @@ export class getUserApi {
     return new Promise(async (resolve, reject) => {
       try {
         const userDeatils: User = JSON.parse(event.body);
-        logger.info("At the userAPI ", userDeatils);
+        logger.info("At the getUserAPI ", userDeatils);
         const response = await userService.getUserById(userDeatils.userID);
         resolve(
           formatJSONResponse(
-            HTTP.SUCCESS,
+            response != null ? HTTP.SUCCESS : HTTP.BAD_REQUEST,
             response != null
-              ? `Fetched user details of ${response.name}`
+              ? `Fetched user details of ${response[0].name}`
               : "User doesn't Exist in the System",
             response
           )
