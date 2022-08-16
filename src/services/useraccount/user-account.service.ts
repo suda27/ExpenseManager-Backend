@@ -80,6 +80,26 @@ class UserAccountService {
       throw Error(`Error at the Data layer, Caught at User Account Service`);
     }
   }
+
+  async updateSingleUserAccount(userAccountDetails: UserAccount) {
+    try {
+      logger.info("updateSingleUserAccountApi at User Account Service");
+      console.log(userAccountDetails.accountID);
+      if (!this.fetchSingleUserAccount(userAccountDetails.accountID)) {
+        return null;
+      }
+      const response = await userAccountData.updateSingleUserAccount(
+        userAccountDetails
+      );
+      return response;
+    } catch (err) {
+      logger.error(
+        "Error at the Data layer, Caught at User Account Service",
+        err
+      );
+      throw Error(`Error at the Data layer, Caught at User Account Service`);
+    }
+  }
 }
 
 const userAccountService = new UserAccountService(

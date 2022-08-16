@@ -45,14 +45,6 @@ provider:
           Resource: "*"
 
 functions:
-  helloworld:
-    handler: src/api/user/helloWorld.handler
-    name: ${self:custom.projectname}-${sls:stage}-lambda-helloWorld
-    events:
-      - http:
-          path: /api/helloworld
-          method: GET
-          cors: true
   createUserApi:
     handler: src/api/user/createUserApi.handler
     name: ${self:custom.projectname}-${sls:stage}-create-user
@@ -108,6 +100,14 @@ functions:
       - http:
           path: /api/em-fetch-singleUserAccounts
           method: POST
+          cors: true
+  updateSingleUserAccountApi:
+    handler: src/api/useraccount/updateSingleUserAccountApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-update-singleUserAccounts
+    events:
+      - http:
+          path: /api/em-update-singleUserAccounts
+          method: PUT
           cors: true
 
 resources:

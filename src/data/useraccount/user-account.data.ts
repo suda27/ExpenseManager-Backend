@@ -29,6 +29,64 @@ class UserAccountData {
     }
   }
 
+  async updateSingleUserAccount(userAccountDeatils: UserAccount) {
+    logger.info(
+      "updateSingleUserAccount method in UserData",
+      userAccountDeatils
+    );
+    try {
+      const initialParams: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+        TableName: this.tableName,
+        ConditionExpression: "attribute_exists(accountID)",
+        Key: {
+          accountID: userAccountDeatils.accountID
+        },
+        UpdateExpression: `SET
+          #account_description = :account_description,
+          #account_group = :account_group,
+          #account_updated_date = :account_updated_date,
+          #account_amount = :account_amount,
+          #account_status = :account_status,
+          #account_name = :account_name
+          `,
+        ExpressionAttributeNames: {
+          "#account_description": "account_description",
+          "#account_group": "account_group",
+          "#account_updated_date": "account_updated_date",
+          "#account_amount": "account_amount",
+          "#account_status": "account_status",
+          "#account_name": "account_name"
+        },
+        ExpressionAttributeValues: {
+          ":account_description": userAccountDeatils.account_description,
+          ":account_group": userAccountDeatils.account_group,
+          ":account_updated_date": new Date().toLocaleString(),
+          ":account_amount": userAccountDeatils.account_amount,
+          ":account_status": userAccountDeatils.account_status,
+          ":account_name": userAccountDeatils.account_name
+        }
+      };
+
+      console.log("Update Params --->", initialParams);
+      await this.docClient
+        .update(initialParams, function(err, data) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(data);
+          }
+        })
+        .promise();
+      logger.info("User Account data persisted successfuly");
+      return userAccountDeatils;
+    } catch (error) {
+      logger.error("Error occured while persisting data", error);
+      throw Error(
+        `There was an error while persisting data to ${this.tableName}`
+      );
+    }
+  }
+
   async fetchSingleUserAccount(accountID: string) {
     const params = {
       TableName: this.tableName,
