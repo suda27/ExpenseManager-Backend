@@ -25,7 +25,7 @@ class UserAccountService {
     const existingUserList = await userService.getUserById(
       userAccountDetails.userID
     );
-    if (!existingUserList.length) {
+    if (!existingUserList) {
       console.log("User Doesn't Exist");
       return null;
     }
@@ -85,7 +85,11 @@ class UserAccountService {
     try {
       logger.info("updateSingleUserAccountApi at User Account Service");
       console.log(userAccountDetails.accountID);
-      if (!this.fetchSingleUserAccount(userAccountDetails.accountID)) {
+      const existingUserAccount = await this.fetchSingleUserAccount(
+        userAccountDetails.accountID
+      );
+      if (!existingUserAccount) {
+        console.log("account doesn't exist");
         return null;
       }
       const response = await userAccountData.updateSingleUserAccount(

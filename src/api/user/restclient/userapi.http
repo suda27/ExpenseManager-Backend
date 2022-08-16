@@ -5,9 +5,9 @@ Content-Type: application/json
 
 
 {
-    "name":"Subha",
-    "email":"Subha11@gmail.com",
-    "profile_pic":"https://subha.com",
+    "name":"Bharath",
+    "email":"Bharath@gmail.com",
+    "profile_pic":"https://Bharath.com",
     "currency":"INR"
 }
 
