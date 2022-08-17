@@ -1,0 +1,67 @@
+
+### create valid transaction data
+POST http://localhost:3000/offline/api/em-transaction
+Content-Type: application/json
+
+{
+    "userID":"fbc19072-0159-40f2-b8bd-c747471dca74",
+    "source_account_id":"29951acf-9a49-4cf6-bdd5-58d82f913d77",
+    "source_account_name":"Standard Charted",
+    "transaction_type":"EXPENSE",
+    "transaction_amount":"1346.76",
+    "transaction_date":"16/08/2022, 21:44:03",
+    "transaction_status":"ACTIVE",
+    "category":"Food",
+    "sub_category":"Zomato",
+    "note":"Krishan's Dosai Kadai",
+    "description":"",
+    "currency":"USD",
+    "destination_account_id":"",
+    "destination_account_name":""
+}
+
+
+### create valid transaction data
+POST http://localhost:3000/offline/api/em-transaction
+Content-Type: application/json
+
+{
+    "userID":"fbc19072-0159-40f2-b8bd-c747471dca74",
+    "source_account_id":"6f0444fa-3c2e-4b23-81af-fe560e84eac3",
+    "source_account_name":"HDFC",
+    "transaction_type":"INCOME",
+    "transaction_amount":"2000.00",
+    "transaction_date":"17/08/2022, 11:40:03",
+    "transaction_status":"ACTIVE",
+    "category":"Owes",
+    "sub_category":"Friends",
+    "note":"Karthik Owes",
+    "description":"",
+    "currency":"USD",
+    "destination_account_id":"",
+    "destination_account_name":"" 
+}
+
+### create valid transaction data
+POST http://localhost:3000/offline/api/em-transaction
+Content-Type: application/json
+
+{
+    "userID":"fbc19072-0159-40f2-b8bd-c747471dca74",
+    "source_account_id":"6f0444fa-3c2e-4b23-81af-fe560e84eac3",
+    "source_account_name":"HDFC",
+    "transaction_type":"TRANSFER",
+    "transaction_amount":"2000.00",
+    "transaction_date":"17/08/2022, 11:40:03",
+    "transaction_status":"ACTIVE",
+    "category":"Credit Card Bill",
+    "sub_category":"",
+    "note":"Transfering for Credit Card Bill Settlement",
+    "description":"",
+    "currency":"USD",
+    "destination_account_id":"29951acf-9a49-4cf6-bdd5-58d82f913d77",
+    "destination_account_name":"Standard Charted"
+}
+
+
+

@@ -135,12 +135,10 @@ class UserAccountData {
     const data = await this.docClient
       .scan(params, function(err, data) {
         if (err) {
-          console.log(err);
+          logger.error(err);
         }
       })
       .promise();
-    console.log(data);
-    logger.info(data);
     if (!data || !data.Items.length) {
       logger.info("No data found");
       return null;

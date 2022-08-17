@@ -119,6 +119,30 @@ functions:
           path: /api/em-transaction
           method: POST
           cors: true
+  fetchAllUserTransactionApi:
+    handler: src/api/transaction/fetchAllUserTransactionApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-fetch-user-transactions
+    events:
+      - http:
+          path: /api/em-fetch-user-transactions
+          method: POST
+          cors: true
+  fetchAllAccountTransactionApi:
+    handler: src/api/transaction/fetchAllAccountTransactionApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-fetch-account-transactions
+    events:
+      - http:
+          path: /api/em-fetch-account-transactions
+          method: POST
+          cors: true
+  fetchSingleTransactionApi:
+    handler: src/api/transaction/fetchSingleTransactionApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-fetch-single-transactions
+    events:
+      - http:
+          path: /api/em-fetch-single-transactions
+          method: POST
+          cors: true
 
 resources:
   Resources:
