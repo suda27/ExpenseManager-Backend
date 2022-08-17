@@ -30,7 +30,6 @@ class UserData {
 
   async updateUserDetails(userDeatils: User) {
     logger.info("updateUserDetails method in UserData", userDeatils);
-    console.log("updateUserDetails method in UserData", userDeatils);
     try {
       const initialParams = {
         TableName: this.tableName,
@@ -66,7 +65,9 @@ class UserData {
         logger.info("No data found");
         return null;
       }
-      return data.Items;
+
+      const fetchedUser = User.fromItem(data.Items[0]);
+      return fetchedUser;
     } catch (error) {
       logger.error("Error occured while persisting data", error);
       throw Error(
@@ -92,14 +93,14 @@ class UserData {
     };
 
     const data = await this.docClient.query(params).promise();
-    console.log(data);
     logger.info(data);
     if (!data || !data.Items.length) {
       logger.info("No data found");
       return null;
     }
 
-    return data.Items;
+    const fetchedUser = User.fromItem(data.Items[0]);
+    return fetchedUser;
   }
 }
 

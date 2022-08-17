@@ -17,8 +17,8 @@ class UserService {
     logger.info("createUser method of UserService", userDeatils);
 
     /* Check if user already exists */
-    const existingUserList = await this.getUserByEmail(userDeatils.email);
-    if (existingUserList.length) {
+    const existingUser = await this.getUserByEmail(userDeatils.email);
+    if (existingUser) {
       console.log("User Already Exist");
       return null;
     }
@@ -108,9 +108,8 @@ class UserService {
     logger.info("getUserByID method of UserService");
     try {
       /* Get user list by ID */
-      const userList = await userData.getUsersByID(userID);
-      console.log("after fetching user with user id", userList);
-      return userList;
+      const user = await userData.getUsersByID(userID);
+      return user;
     } catch (err) {
       logger.error("Error at the Data layer, Caught at User Service", err);
       throw Error(`Error at the Data layer, Caught at User Service`);

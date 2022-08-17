@@ -67,7 +67,6 @@ class UserAccountData {
         }
       };
 
-      console.log("Update Params --->", initialParams);
       await this.docClient
         .update(initialParams, function(err, data) {
           if (err) {
@@ -112,8 +111,10 @@ class UserAccountData {
       logger.info("No data found");
       return null;
     }
+    // Test User Account Class type
+    const fetchedUserSingleAccount = UserAccount.fromItem(data.Items[0]);
 
-    return data.Items;
+    return fetchedUserSingleAccount;
   }
 
   async fetchUserAccounts(userDetails: User) {
@@ -144,8 +145,11 @@ class UserAccountData {
       logger.info("No data found");
       return null;
     }
+    const fetchedUserAllAccounts = data.Items.map(item => {
+      return UserAccount.fromItem(item);
+    });
 
-    return data.Items;
+    return fetchedUserAllAccounts;
   }
 }
 

@@ -35,6 +35,7 @@ custom:
   projectname: em
   usertable: ${self:custom.projectname}-${sls:stage}-user
   userAccountTable: ${self:custom.projectname}-${sls:stage}-user-account
+  userTransactionTable: ${self:custom.projectname}-${sls:stage}-user-transaction
 
   dynamodb:
     stages:
@@ -155,5 +156,17 @@ resources:
             AttributeType: "S"
         KeySchema:
           - AttributeName: "accountID"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+
+    EM_USER_TRANSACTION_TABLE:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.userTransactionTable}
+        AttributeDefinitions:
+          - AttributeName: "transactionID"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "transactionID"
             KeyType: "HASH"
         BillingMode: PAY_PER_REQUEST

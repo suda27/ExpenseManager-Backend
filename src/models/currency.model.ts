@@ -1,4 +1,4 @@
-interface Currency {
+class Currency {
   currency: string;
 }
 export default Currency;

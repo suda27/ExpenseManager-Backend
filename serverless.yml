@@ -14,6 +14,7 @@ custom:
   projectname: em
   usertable: ${self:custom.projectname}-${sls:stage}-user
   userAccountTable: ${self:custom.projectname}-${sls:stage}-user-account
+  userTransactionTable: ${self:custom.projectname}-${sls:stage}-user-transaction
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
@@ -32,6 +33,7 @@ provider:
   environment:
     USER_TABLE: ${self:custom.usertable}
     USER_ACCOUNT_TABLE: ${self:custom.userAccountTable}
+    USER_TRANSACTION_TABLE: ${self:custom.userTransactionTable}
   iam:
     role:
       name: tsbe-lambda-execution-role-${sls:stage}
@@ -109,6 +111,14 @@ functions:
           path: /api/em-update-singleUserAccounts
           method: PUT
           cors: true
+  addTransactionApi:
+    handler: src/api/transaction/addTransactionApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-add-transaction
+    events:
+      - http:
+          path: /api/em-transaction
+          method: POST
+          cors: true
 
 resources:
   Resources:
@@ -138,4 +148,16 @@ resources:
             KeyType: "HASH"
           - AttributeName: "accountID"
             KeyType: "RANGE"
+        BillingMode: PAY_PER_REQUEST
+
+    EMUSERTRANSACTIONTABLE:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.userTransactionTable}
+        AttributeDefinitions:
+          - AttributeName: "transactionID"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "transactionID"
+            KeyType: "HASH"
         BillingMode: PAY_PER_REQUEST
