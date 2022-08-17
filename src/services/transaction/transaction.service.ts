@@ -46,6 +46,8 @@ class TransactionService {
         const expenseTransaction = await transactionData.addExpenseTransaction(
           userTransaction
         );
+
+        //calculate Expense
         const userAfterExpenseSourceAmount: number = this.calculatExpense(
           sourceAccount,
           userTransaction
@@ -68,15 +70,86 @@ class TransactionService {
         );
         throw Error(`Error at the Data layer, Caught at User Service`);
       }
-    }
+    } else if (userTransaction.transaction_type == TRANSACTION_TYPE.INCOME) {
+      try {
+        const incomeTransaction = await transactionData.addExpenseTransaction(
+          userTransaction
+        );
 
-    /* If transaction type is Transfer check Destination soruce account exist*/
-    if (userTransaction.transaction_type == TRANSACTION_TYPE.TRANSFER) {
-      const destinationAccount = await userAccountService.fetchSingleUserAccount(
-        userTransaction.destination_account_id
-      );
-      if (!destinationAccount) {
-        return null;
+        //calculate Income
+        const userAfterIncomeSourceAmount: number = this.calculatIncome(
+          sourceAccount,
+          userTransaction
+        );
+
+        sourceAccount.account_amount = String(userAfterIncomeSourceAmount);
+
+        const updateSourceAccount = await userAccountData.updateSingleUserAccount(
+          sourceAccount
+        );
+        const response = {
+          incomeTransaction,
+          updateSourceAccount
+        };
+        return response;
+      } catch (err) {
+        logger.error(
+          "Error at the Data layer, Caught at User Transaction Service",
+          err
+        );
+        throw Error(`Error at the Data layer, Caught at User Service`);
+      }
+    } else if (userTransaction.transaction_type == TRANSACTION_TYPE.TRANSFER) {
+      try {
+        /* If transaction type is Transfer check Destination soruce account exist*/
+        const destinationAccount = await userAccountService.fetchSingleUserAccount(
+          userTransaction.destination_account_id
+        );
+        if (!destinationAccount) {
+          return null;
+        }
+
+        /*/ Calculate transfer by treating as an Expense in Source Account
+      and Income in Destination Account */
+
+        // Income Destination Calculation
+        const userAfterIncomeDestinationAmount: number = this.calculatIncome(
+          destinationAccount,
+          userTransaction
+        );
+        destinationAccount.account_amount = String(
+          userAfterIncomeDestinationAmount
+        );
+        const updateDestinationAccount = await userAccountData.updateSingleUserAccount(
+          destinationAccount
+        );
+
+        // Expense Source Calculation
+        const userAfterExpenseSourceAmount: number = this.calculatExpense(
+          sourceAccount,
+          userTransaction
+        );
+        sourceAccount.account_amount = String(userAfterExpenseSourceAmount);
+        const updateSourceAccount = await userAccountData.updateSingleUserAccount(
+          sourceAccount
+        );
+
+        const transferTransaction = await transactionData.addExpenseTransaction(
+          userTransaction
+        );
+
+        const response = {
+          updateDestinationAccount,
+          updateSourceAccount,
+          transferTransaction
+        };
+        return response;
+      } catch (err) {
+        logger.error(
+          "Error at the Data layer, Caught at User Transaction Service",
+          err
+        );
+        throw Error(`Error at the Data layer, Caught at User Service`);
       }
     }
   }
@@ -87,12 +160,18 @@ class TransactionService {
     userTransaction.updated_date = new Date().toLocaleString();
   }
 
-  private calculatExpense(sourceAccount, userTransaction) {
-    const userSourceAmount: number = +sourceAccount.account_amount;
+  private calculatExpense(account, userTransaction) {
+    const userAmount: number = +account.account_amount;
     const userTransactionAmount: number = +userTransaction.transaction_amount;
-    const userAfterExpenseSourceAmount: number =
-      userSourceAmount - userTransactionAmount;
-    return userAfterExpenseSourceAmount;
+    const userAfterExpenseAmount: number = userAmount - userTransactionAmount;
+    return userAfterExpenseAmount;
+  }
+
+  private calculatIncome(account, userTransaction) {
+    const userAmount: number = +account.account_amount;
+    const userTransactionAmount: number = +userTransaction.transaction_amount;
+    const userAfteIncomeAmount: number = userAmount + userTransactionAmount;
+    return userAfteIncomeAmount;
   }
 }
 const transactionService = new TransactionService(
