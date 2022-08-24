@@ -71,12 +71,10 @@ class UserAccountData {
         .update(initialParams, function(err, data) {
           if (err) {
             console.log(err);
-          } else {
-            console.log(data);
           }
         })
         .promise();
-      logger.info("User Account data persisted successfuly");
+      logger.info("User Account data persisted successfully");
       return userAccountDeatils;
     } catch (error) {
       logger.error("Error occured while persisting data", error);

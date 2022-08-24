@@ -19,6 +19,10 @@ class TransactionService {
     private readonly tableName: string
   ) {}
 
+  /**
+   * Fetch All Transaction of a User
+   * @param userDetails
+   */
   async fetchAllTransactionOfUser(userDetails: User) {
     logger.info("fetchAllTransaction method of TransactionService");
 
@@ -44,6 +48,10 @@ class TransactionService {
     }
   }
 
+  /**
+   * Fetch all Transactions of an Account
+   * @param userAccountDetails
+   */
   async fetchAllTransactionOfAccount(userAccountDetails: UserAccount) {
     logger.info("fetchAllTransaction method of TransactionService");
 
@@ -68,7 +76,10 @@ class TransactionService {
       throw Error(`Error at the Data layer, Caught at Transaction Service`);
     }
   }
-
+  /**
+   *  Fetch Single Transaction
+   * @param userTransaction
+   */
   async fetchSingleTransaction(userTransaction: UserTransaction) {
     logger.info(
       "fetchSingleTransaction method of TransactionService",
@@ -88,7 +99,10 @@ class TransactionService {
       throw Error(`Error at the Data layer, Caught at Transaction Service`);
     }
   }
-
+  /**
+   * Update Transaction
+   * @param updatedUserTransaction
+   */
   async updateTransaction(updatedUserTransaction: UserTransaction) {
     logger.info(
       "updateTransaction method of TransactionService",
@@ -412,38 +426,10 @@ class TransactionService {
             "---->>> Source account changed along with TT from Tansfer to Income/Expense ----->>>>"
           );
 
-          const existingUserSourceAccount = await userAccountService.fetchSingleUserAccount(
-            existingTransaction.source_account_id
+          return await this.sourceAccountChangedAlongWithTTfromTransferToIncomeOrExpense(
+            existingTransaction,
+            updatedUserTransaction
           );
-
-          const existingUserDestinationAccount = await userAccountService.fetchSingleUserAccount(
-            existingTransaction.destination_account_id
-          );
-
-          const newUserSourceAccount = await userAccountService.fetchSingleUserAccount(
-            updatedUserTransaction.source_account_id
-          );
-
-          existingUserSourceAccount.account_amount = String(
-            Number(existingUserSourceAccount.account_amount) +
-              Number(existingTransaction.transaction_amount)
-          );
-
-          existingUserDestinationAccount.account_amount = String(
-            Number(existingUserDestinationAccount.account_amount) -
-              Number(existingTransaction.transaction_amount)
-          );
-
-          newUserSourceAccount.account_amount =
-            updatedUserTransaction.transaction_type === TRANSACTION_TYPE.EXPENSE
-              ? String(
-                  Number(newUserSourceAccount.account_amount) -
-                    Number(updatedUserTransaction.transaction_amount)
-                )
-              : String(
-                  Number(newUserSourceAccount.account_amount) +
-                    Number(updatedUserTransaction.transaction_amount)
-                );
         }
       }
       return null;
@@ -456,6 +442,10 @@ class TransactionService {
     }
   }
 
+  /**
+   * Add transaction
+   * @param userTransaction
+   */
   async addTransaction(userTransaction: UserTransaction) {
     logger.info("addTransaction method of TransactionService", userTransaction);
 
@@ -525,6 +515,52 @@ class TransactionService {
         throw Error(`Error at the Data layer, Caught at Transaction Service`);
       }
     }
+  }
+
+  private async sourceAccountChangedAlongWithTTfromTransferToIncomeOrExpense(
+    existingTransaction: UserTransaction,
+    updatedUserTransaction: UserTransaction
+  ) {
+    const existingUserSourceAccount = await userAccountService.fetchSingleUserAccount(
+      existingTransaction.source_account_id
+    );
+    const existingUserDestinationAccount = await userAccountService.fetchSingleUserAccount(
+      existingTransaction.destination_account_id
+    );
+    const newUserSourceAccount = await userAccountService.fetchSingleUserAccount(
+      updatedUserTransaction.source_account_id
+    );
+    existingUserSourceAccount.account_amount = String(
+      Number(existingUserSourceAccount.account_amount) +
+        Number(existingTransaction.transaction_amount)
+    );
+    existingUserDestinationAccount.account_amount = String(
+      Number(existingUserDestinationAccount.account_amount) -
+        Number(existingTransaction.transaction_amount)
+    );
+    newUserSourceAccount.account_amount =
+      updatedUserTransaction.transaction_type === TRANSACTION_TYPE.EXPENSE
+        ? String(
+            Number(newUserSourceAccount.account_amount) -
+              Number(updatedUserTransaction.transaction_amount)
+          )
+        : String(
+            Number(newUserSourceAccount.account_amount) +
+              Number(updatedUserTransaction.transaction_amount)
+          );
+    //Update existing user source account amount detials
+    await userAccountData.updateSingleUserAccount(existingUserSourceAccount);
+    //Update existing user Destination account amount detials
+    await userAccountData.updateSingleUserAccount(
+      existingUserDestinationAccount
+    );
+    //Update new user source account amount detials
+    await userAccountData.updateSingleUserAccount(newUserSourceAccount);
+    //Update transaction details
+    const updatedTransaction = await transactionData.updateUserTransactionForSameTransactionType(
+      updatedUserTransaction
+    );
+    return updatedTransaction;
   }
 
   private async sourceAccountChangedAlongWithTransactionTypeTransfer(
