@@ -143,6 +143,14 @@ functions:
           path: /api/em-fetch-single-transactions
           method: POST
           cors: true
+  updateTransactionApi:
+    handler: src/api/transaction/updateTransactionApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-update-single-transaction
+    events:
+      - http:
+          path: /api/em-update-single-transaction
+          method: PUT
+          cors: true
 
 resources:
   Resources:

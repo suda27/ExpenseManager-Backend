@@ -68,7 +68,6 @@ class UserAccountService {
   async fetchSingleUserAccount(accountID: string) {
     try {
       logger.info("fetchSingleUserAccount at User Account Service");
-      console.log(accountID);
       const response = await userAccountData.fetchSingleUserAccount(accountID);
       return response;
     } catch (err) {

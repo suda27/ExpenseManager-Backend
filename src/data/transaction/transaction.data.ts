@@ -12,8 +12,8 @@ class TransactionData {
     private readonly tableName: string
   ) {}
 
-  async addExpenseTransaction(userTransaction: UserTransaction) {
-    logger.info("addExpenseTransaction method in TransactionData");
+  async addTransaction(userTransaction: UserTransaction) {
+    logger.info("addTransaction method in TransactionData");
     try {
       const initialParams = {
         TableName: this.tableName,
@@ -151,6 +151,80 @@ class TransactionData {
 
     const transactionDetails = UserTransaction.fromItem(data.Items[0]);
     return transactionDetails;
+  }
+
+  async updateUserTransactionForSameTransactionType(
+    userTransaction: UserTransaction
+  ) {
+    logger.info("updateUserTransaction method in TransactionData");
+    try {
+      const initialParams: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+        TableName: this.tableName,
+        ConditionExpression: "attribute_exists(transactionID)",
+        Key: {
+          transactionID: userTransaction.transactionID
+        },
+        UpdateExpression: `SET
+              #source_account_id = :source_account_id,
+              #source_account_name = :source_account_name,
+              #destination_account_id = :destination_account_id,
+              #destination_account_name = :destination_account_name,
+              #transaction_type = :transaction_type,
+              #transaction_amount = :transaction_amount,
+              #transaction_date = :transaction_date,
+              #category = :category,
+              #sub_category = :sub_category,
+              #note = :note,
+              #description = :description,
+              #updated_date = :updated_date
+              `,
+        ExpressionAttributeNames: {
+          "#source_account_id": "source_account_id",
+          "#source_account_name": "source_account_name",
+          "#destination_account_id": "destination_account_id",
+          "#destination_account_name": "destination_account_name",
+          "#transaction_type": "transaction_type",
+          "#transaction_amount": "transaction_amount",
+          "#transaction_date": "transaction_date",
+          "#category": "category",
+          "#sub_category": "sub_category",
+          "#note": "note",
+          "#description": "description",
+          "#updated_date": "updated_date"
+        },
+        ExpressionAttributeValues: {
+          ":source_account_id": userTransaction.source_account_id,
+          ":source_account_name": userTransaction.source_account_name,
+          ":destination_account_id": userTransaction.destination_account_id,
+          ":destination_account_name": userTransaction.destination_account_name,
+          ":transaction_type": userTransaction.transaction_type,
+          ":transaction_amount": userTransaction.transaction_amount,
+          ":transaction_date": userTransaction.transaction_date,
+          ":category": userTransaction.category,
+          ":sub_category": userTransaction.sub_category,
+          ":note": userTransaction.note,
+          ":description": userTransaction.description,
+          ":updated_date": new Date().toLocaleString()
+        }
+      };
+
+      await this.docClient
+        .update(initialParams, function(err, data) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("updated Succesfuly", data);
+          }
+        })
+        .promise();
+      logger.info("User Transaction data persisted successfully");
+      return userTransaction;
+    } catch (err) {
+      logger.error("Error occured while persisting data", err);
+      throw Error(
+        `There was an error while persisting data to ${this.tableName}`
+      );
+    }
   }
 }
 
