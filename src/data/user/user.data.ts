@@ -8,7 +8,7 @@ class UserData {
   constructor(
     private readonly docClient: DocumentClient,
     private readonly tableName: string
-  ) {}
+  ) { }
 
   async createUser(userDeatils: User) {
     logger.info("createUser method in UserData", userDeatils);
@@ -59,9 +59,12 @@ class UserData {
           ":email": email
         }
       };
-
-      const data = await this.docClient.scan(params).promise();
-      if (!data || !data.Items) {
+      console.log(params);
+      const data = await this.docClient.scan(params, (err, data) => {
+        console.log("data", data);
+        console.log("error", err);
+      }).promise();
+      if (!data || !data.Items.length) {
         logger.info("No data found");
         return null;
       }
@@ -71,7 +74,7 @@ class UserData {
     } catch (error) {
       logger.error("Error occured while persisting data", error);
       throw Error(
-        `There was an error while persisting data to ${this.tableName}`
+        `There was an error while fetching data from ${this.tableName}`
       );
     }
   }
@@ -91,7 +94,7 @@ class UserData {
         ":userID": userID
       }
     };
-
+    console.log(params)
     const data = await this.docClient.query(params).promise();
     logger.info(data);
     if (!data || !data.Items.length) {

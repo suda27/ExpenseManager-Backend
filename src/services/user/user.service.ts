@@ -10,7 +10,7 @@ class UserService {
   constructor(
     private readonly docClient: DocumentClient,
     private readonly tableName: string
-  ) {}
+  ) { }
 
   // Create User
   async createUser(userDeatils: User) {
@@ -18,6 +18,7 @@ class UserService {
 
     /* Check if user already exists */
     const existingUser = await this.getUserByEmail(userDeatils.email);
+    console.log('Exisiting user status -->', existingUser)
     if (existingUser) {
       console.log("User Already Exist");
       return null;
@@ -73,12 +74,12 @@ class UserService {
     if (!existingUser) {
       return null;
     }
-    const inactiveUser = existingUser[0];
-    inactiveUser.status = STAUS.INACTIVE;
+
+    const inactiveUser = { ...existingUser, status: STAUS.INACTIVE };
 
     const updateUser: User = constructUpdateUserDetailsData(
-      inactiveUser,
-      userDeatils
+
+      existingUser, inactiveUser
     );
     try {
       /* Update user */
