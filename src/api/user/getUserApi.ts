@@ -16,7 +16,7 @@ export class getUserApi {
       try {
         const userDeatils: User = JSON.parse(event.body);
         logger.info("At the getUserAPI ", userDeatils);
-        const response = await userService.getUserById(userDeatils.userID);
+        const response = await userService.getUserByEmail(userDeatils.email.toLowerCase());
         resolve(
           formatJSONResponse(
             response != null ? HTTP.SUCCESS : HTTP.BAD_REQUEST,

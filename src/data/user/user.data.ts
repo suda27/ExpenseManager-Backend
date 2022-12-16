@@ -51,11 +51,14 @@ class UserData {
     try {
       const params = {
         TableName: this.tableName,
-        FilterExpression: "#email= :email",
+ 
+        FilterExpression: "#email = :email and #status = :status",
         ExpressionAttributeNames: {
-          "#email": "email"
+          "#email": "email",
+          "#status": "status"
         },
         ExpressionAttributeValues: {
+          ":status": STAUS.ACTIVE,
           ":email": email
         }
       };

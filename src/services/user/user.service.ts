@@ -25,6 +25,7 @@ class UserService {
     }
 
     /* Set attributes Created_date, Status and generate UserID */
+    userDeatils.email = userDeatils.email.toLowerCase();
     userDeatils.created_date = new Date().toLocaleString();
     userDeatils.updated_date = new Date().toLocaleString();
     userDeatils.status = STAUS.ACTIVE;
