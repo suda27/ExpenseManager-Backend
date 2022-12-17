@@ -9,7 +9,7 @@ class UserAccountData {
   constructor(
     private readonly docClient: DocumentClient,
     private readonly tableName: string
-  ) {}
+  ) { }
 
   async createUserAccount(userAccountDeatils: UserAccount) {
     logger.info("createUser method in UserData", userAccountDeatils);
@@ -68,7 +68,7 @@ class UserAccountData {
       };
 
       await this.docClient
-        .update(initialParams, function(err, data) {
+        .update(initialParams, function (err, data) {
           if (err) {
             console.log(err);
           }
@@ -87,9 +87,7 @@ class UserAccountData {
   async fetchSingleUserAccount(accountID: string) {
     const params = {
       TableName: this.tableName,
-      KeyConditionExpression: "#accountID = :accountID",
-
-      FilterExpression: "#account_status = :account_status",
+      FilterExpression: "#account_status = :account_status and #accountID = :accountID",
       ExpressionAttributeNames: {
         "#accountID": "accountID",
         "#account_status": "account_status"
@@ -102,7 +100,7 @@ class UserAccountData {
 
     console.log(params);
 
-    const data = await this.docClient.query(params).promise();
+    const data = await this.docClient.scan(params).promise();
     console.log(data);
     logger.info(data);
     if (!data || !data.Items.length) {
@@ -131,7 +129,7 @@ class UserAccountData {
     };
 
     const data = await this.docClient
-      .scan(params, function(err, data) {
+      .scan(params, function (err, data) {
         if (err) {
           logger.error(err);
         }
