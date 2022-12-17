@@ -53,7 +53,7 @@ class UserService {
     }
 
     const updateUser: User = constructUpdateUserDetailsData(
-      existingUser[0],
+      existingUser,
       userDeatils
     );
     try {

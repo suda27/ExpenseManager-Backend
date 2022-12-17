@@ -10,6 +10,8 @@ package:
   individually: true
 
 custom:
+  serverless-offline:
+    httpPort: 4000
   projectname: em
   usertable: ${self:custom.projectname}-${sls:stage}-user
   userAccountTable: ${self:custom.projectname}-${sls:stage}-user-account
