@@ -39,7 +39,8 @@ class UserAccountData {
         TableName: this.tableName,
         ConditionExpression: "attribute_exists(accountID)",
         Key: {
-          accountID: userAccountDeatils.accountID
+          accountID: userAccountDeatils.accountID,
+          userID:userAccountDeatils.userID
         },
         UpdateExpression: `SET
           #account_description = :account_description,
@@ -67,6 +68,7 @@ class UserAccountData {
         }
       };
 
+      console.log(initialParams);
       await this.docClient
         .update(initialParams, function (err, data) {
           if (err) {
