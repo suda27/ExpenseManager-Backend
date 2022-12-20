@@ -6,12 +6,55 @@ import { v4 as uuidv4 } from "uuid";
 import userData from "../../data/user/user.data";
 import { STAUS } from "../../constants/application.constant";
 
+
 class UserService {
   constructor(
     private readonly docClient: DocumentClient,
     private readonly tableName: string
   ) { }
 
+
+  //login user
+  async loginUser(userDeatils: User) {
+    logger.info("createUser method of UserService", userDeatils);
+
+    /* Check if user already exists */
+    const existingUser = await userData.getUser(userDeatils);
+    console.log('Exisiting user status -->', existingUser)
+    if (existingUser) {
+      console.log("User Already Exist");
+      userDeatils.status = STAUS.ACTIVE;
+      const updateUser: User = constructUpdateUserDetailsData(
+        existingUser,
+        userDeatils
+      );
+      try {
+        /* update user detials */
+        const response = await userData.updateUserDetails(updateUser);
+        return response;
+      } catch (err) {
+        logger.error("Error at the Data layer, Caught at User Service", err);
+        throw Error(`Error at the Data layer, Caught at User Service`);
+      }
+
+    }
+
+    /* Set attributes Created_date, Status and generate userId */
+    userDeatils.email = userDeatils.email.toLowerCase();
+    userDeatils.created_date = new Date().toLocaleString();
+    userDeatils.updated_date = new Date().toLocaleString();
+    userDeatils.status = STAUS.ACTIVE;
+    // userDeatils.userId = uuidv4(); -- Since google send the userId, we don't generate anymore
+
+    try {
+      /* Create user */
+      const response = await userData.createUser(userDeatils);
+      return response;
+    } catch (err) {
+      logger.error("Error at the Data layer, Caught at User Service", err);
+      throw Error(`Error at the Data layer, Caught at User Service`);
+    }
+  }
   // Create User
   async createUser(userDeatils: User) {
     logger.info("createUser method of UserService", userDeatils);
@@ -24,12 +67,12 @@ class UserService {
       return null;
     }
 
-    /* Set attributes Created_date, Status and generate UserID */
+    /* Set attributes Created_date, Status and generate userId */
     userDeatils.email = userDeatils.email.toLowerCase();
     userDeatils.created_date = new Date().toLocaleString();
     userDeatils.updated_date = new Date().toLocaleString();
     userDeatils.status = STAUS.ACTIVE;
-    userDeatils.userID = uuidv4();
+    userDeatils.userId = uuidv4();
 
     try {
       /* Create user */
@@ -46,7 +89,7 @@ class UserService {
     logger.info("updateUser method of UserService", userDeatils);
 
     /* Check if user exists */
-    const existingUser = await this.getUserById(userDeatils.userID);
+    const existingUser = await this.getUserById(userDeatils.userId);
     console.log("Okay exisintg user check -->", existingUser);
     if (!existingUser) {
       return null;
@@ -57,7 +100,7 @@ class UserService {
       userDeatils
     );
     try {
-      /* Create user */
+      /* Update user */
       const response = await userData.updateUserDetails(updateUser);
       return response;
     } catch (err) {
@@ -71,7 +114,7 @@ class UserService {
     logger.info("deleteUser method of UserService", userDeatils);
 
     /* Check if user exists */
-    const existingUser = await this.getUserById(userDeatils.userID);
+    const existingUser = await this.getUserById(userDeatils.userId);
     if (!existingUser) {
       return null;
     }
@@ -106,11 +149,11 @@ class UserService {
   }
 
   // Get User By ID
-  async getUserById(userID: string) {
+  async getUserById(userId: string) {
     logger.info("getUserByID method of UserService");
     try {
       /* Get user list by ID */
-      const user = await userData.getUsersByID(userID);
+      const user = await userData.getUsersByID(userId);
       return user;
     } catch (err) {
       logger.error("Error at the Data layer, Caught at User Service", err);
@@ -134,7 +177,7 @@ function constructUpdateUserDetailsData(
   userDeatils: User
 ): User {
   return {
-    userID: existingUser.userID,
+    userId: existingUser.userId,
     currency:
       existingUser.currency == userDeatils.currency
         ? existingUser.currency
@@ -143,16 +186,17 @@ function constructUpdateUserDetailsData(
       existingUser.name == userDeatils.name
         ? existingUser.name
         : userDeatils.name,
-    profile_pic:
-      existingUser.profile_pic == userDeatils.profile_pic
-        ? existingUser.profile_pic
-        : userDeatils.profile_pic,
+    picture:
+      existingUser.picture == userDeatils.picture
+        ? existingUser.picture
+        : userDeatils.picture,
     email: existingUser.email,
     status:
       existingUser.status === userDeatils.status
         ? existingUser.status
         : userDeatils.status,
     created_date: existingUser.created_date,
-    updated_date: new Date().toLocaleString()
+    updated_date: new Date().toLocaleString(),
+    exp: existingUser.exp
   };
 }

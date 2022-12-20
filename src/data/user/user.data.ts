@@ -46,12 +46,49 @@ class UserData {
     }
   }
 
+  async getUser(userDetails: User) {
+    logger.info("getUserByEmail method in UserData");
+    try {
+      const params = {
+        TableName: this.tableName,
+        Key: {
+          userId: userDetails.userId,
+          email: userDetails.email
+        },
+        FilterExpression: "#status = :status",
+        ExpressionAttributeNames: {
+          "#status": "status"
+        },
+        ExpressionAttributeValues: {
+          ":status": STAUS.ACTIVE
+        }
+      };
+      console.log(params);
+      const data = await this.docClient.scan(params, (err, data) => {
+        console.log("data", data);
+        console.log("error", err);
+      }).promise();
+      if (!data || !data.Items.length) {
+        logger.info("No data found");
+        return null;
+      }
+
+      const fetchedUser = User.fromItem(data.Items[0]);
+      return fetchedUser;
+    } catch (error) {
+      logger.error("Error occured while persisting data", error);
+      throw Error(
+        `There was an error while fetching data from ${this.tableName}`
+      );
+    }
+  }
+
   async getUsersByEmail(email: string) {
     logger.info("getUserByEmail method in UserData");
     try {
       const params = {
         TableName: this.tableName,
- 
+
         FilterExpression: "#email = :email and #status = :status",
         ExpressionAttributeNames: {
           "#email": "email",

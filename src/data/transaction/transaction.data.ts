@@ -51,7 +51,7 @@ class TransactionData {
         },
         ExpressionAttributeValues: {
           ":transaction_status": STAUS.ACTIVE,
-          ":userID": userDetails.userID
+          ":userID": userDetails.userId
         }
       };
       const data = await this.docClient

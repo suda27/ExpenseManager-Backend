@@ -121,12 +121,12 @@ class UserAccountData {
       FilterExpression:
         "#account_status = :account_status and #userID =:userID",
       ExpressionAttributeNames: {
-        "#userID": "userID",
+        "#userID": "userId",
         "#account_status": "account_status"
       },
       ExpressionAttributeValues: {
         ":account_status": STAUS.ACTIVE,
-        ":userID": userDetails.userID
+        ":userId": userDetails.userId
       }
     };
 

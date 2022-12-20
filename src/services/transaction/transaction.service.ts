@@ -28,7 +28,7 @@ class TransactionService {
 
     /* Check if user exists */
     const existingUser: User = await userService.getUserById(
-      userDetails.userID
+      userDetails.userId
     );
     if (!existingUser) {
       return null;

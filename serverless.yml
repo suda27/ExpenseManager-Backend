@@ -10,15 +10,16 @@ package:
   individually: true
 
 custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
   serverless-offline:
     httpPort: 4000
   projectname: em
   usertable: ${self:custom.projectname}-${sls:stage}-user
   userAccountTable: ${self:custom.projectname}-${sls:stage}-user-account
   userTransactionTable: ${self:custom.projectname}-${sls:stage}-user-transaction
-  webpack:
-    webpackConfig: ./webpack.config.js
-    includeModules: true
+  
 provider:
   name: aws
   runtime: nodejs12.x
@@ -48,6 +49,14 @@ provider:
           Resource: "*"
 
 functions:
+  loginUserApi:
+    handler: src/api/user/loginUserApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-login-user
+    events:
+      - http:
+          path: /api/em-login-user
+          method: POST
+          cors: true
   createUserApi:
     handler: src/api/user/createUserApi.handler
     name: ${self:custom.projectname}-${sls:stage}-create-user
@@ -155,16 +164,20 @@ functions:
 
 resources:
   Resources:
-    EmUserTable:
+    EMUSERTABLE:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.usertable}
         AttributeDefinitions:
-          - AttributeName: "userID"
+          - AttributeName: "userId"
+            AttributeType: "S"
+          - AttributeName: "email"
             AttributeType: "S"
         KeySchema:
-          - AttributeName: "userID"
+          - AttributeName: "userId"
             KeyType: "HASH"
+          - AttributeName: "email"
+            KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST
 
     EMUSERACCOUNTTABLE:
