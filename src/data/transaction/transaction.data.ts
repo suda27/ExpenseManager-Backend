@@ -44,14 +44,14 @@ class TransactionData {
       const initialParams = {
         TableName: this.tableName,
         FilterExpression:
-          "#transaction_status = :transaction_status and #userID =:userID",
+          "#transaction_status = :transaction_status and #userId =:userId",
         ExpressionAttributeNames: {
-          "#userID": "userID",
+          "#userId": "userId",
           "#transaction_status": "transaction_status"
         },
         ExpressionAttributeValues: {
           ":transaction_status": STAUS.ACTIVE,
-          ":userID": userDetails.userId
+          ":userId": userDetails.userId
         }
       };
       const data = await this.docClient

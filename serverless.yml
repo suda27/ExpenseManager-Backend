@@ -185,12 +185,12 @@ resources:
       Properties:
         TableName: ${self:custom.userAccountTable}
         AttributeDefinitions:
-          - AttributeName: "userID"
+          - AttributeName: "userId"
             AttributeType: "S"
           - AttributeName: "accountID"
             AttributeType: "S"
         KeySchema:
-          - AttributeName: "userID"
+          - AttributeName: "userId"
             KeyType: "HASH"
           - AttributeName: "accountID"
             KeyType: "RANGE"

@@ -6,7 +6,7 @@ Content-Type: application/json
 
 
 {
-    "userID":"87497fd0-6e2a-4be9-982f-e2c52829fb52",
+    "userId":"87497fd0-6e2a-4be9-982f-e2c52829fb52",
     "account_name":"HDFC Credit",
     "account_description":"My First Credit Card",
     "account_amount":"3000000",
@@ -18,7 +18,7 @@ POST http://localhost:3000/offline/api/em-create-userAccount
 Content-Type: application/json
 
 {
-    "userID":"87497fd0-6e2a-4be9-982f-e2c52829fb52",
+    "userId":"87497fd0-6e2a-4be9-982f-e2c52829fb52",
     "account_name":"Standard Charted",
     "account_description":"My Second Salary Account",
     "account_amount":"1000000",
@@ -32,7 +32,7 @@ POST http://localhost:3000/offline/api/em-create-userAccount
 Content-Type: application/json
 
 {
-    "userID":"d74ff222-e69d-404f-bd08-a5a51ac7c42c",
+    "userId":"d74ff222-e69d-404f-bd08-a5a51ac7c42c",
     "account_name":"HDFC",
     "account_description":"My First Salary Account",
     "account_amount":"1000000",

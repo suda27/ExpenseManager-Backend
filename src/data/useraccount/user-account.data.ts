@@ -40,7 +40,7 @@ class UserAccountData {
         ConditionExpression: "attribute_exists(accountID)",
         Key: {
           accountID: userAccountDeatils.accountID,
-          userID:userAccountDeatils.userID
+          userId:userAccountDeatils.userId
         },
         UpdateExpression: `SET
           #account_description = :account_description,
@@ -119,9 +119,9 @@ class UserAccountData {
     const params = {
       TableName: this.tableName,
       FilterExpression:
-        "#account_status = :account_status and #userID =:userID",
+        "#account_status = :account_status and #userId =:userId",
       ExpressionAttributeNames: {
-        "#userID": "userId",
+        "#userId": "userId",
         "#account_status": "account_status"
       },
       ExpressionAttributeValues: {

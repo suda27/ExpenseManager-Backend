@@ -1,7 +1,7 @@
 import Currency from "./currency.model";
 
 class UserAccount {
-  public userID: string;
+  public userId: string;
   public accountID: string;
   public account_name: string;
   public account_group: string;
@@ -12,7 +12,7 @@ class UserAccount {
   public account_updated_date: string;
 
   constructor(data: any) {
-    this.userID = data.userID;
+    this.userId = data.userId;
     this.accountID = data.accountID;
     this.account_name = data.account_name;
     this.account_group = data.account_group;
@@ -24,7 +24,7 @@ class UserAccount {
   }
   public static fromItem(item) {
     const data = {
-      userID: item.userID,
+      userId: item.userId,
       accountID: item.accountID,
       account_name: item.account_name,
       account_group: item.account_group,

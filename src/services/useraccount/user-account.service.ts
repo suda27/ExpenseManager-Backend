@@ -23,7 +23,7 @@ class UserAccountService {
 
     /* Check if user already exists */
     const existingUserList = await userService.getUserById(
-      userAccountDetails.userID
+      userAccountDetails.userId
     );
     if (!existingUserList) {
       console.log("User Doesn't Exist");

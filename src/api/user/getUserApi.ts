@@ -18,6 +18,15 @@ export class getUserApi {
 
         const userDeatils: User = JSON.parse(event.body);
         logger.info("At the getUserAPI ", userDeatils);
+        if (!userDeatils.userId) {
+          resolve(
+            formatJSONResponse(
+              HTTP.BAD_REQUEST,
+              "user Id Empty",
+              {}
+            )
+          );
+        }
         const response = await userService.getUserById(userDeatils.userId);
         resolve(
           formatJSONResponse(

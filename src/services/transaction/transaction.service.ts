@@ -450,7 +450,7 @@ class TransactionService {
     logger.info("addTransaction method of TransactionService", userTransaction);
 
     /* Check if user exists */
-    const existingUser = await userService.getUserById(userTransaction.userID);
+    const existingUser = await userService.getUserById(userTransaction.userId);
     if (!existingUser) {
       return null;
     }

@@ -1,7 +1,7 @@
 import Currency from "./currency.model";
 
 class UserTransaction {
-  userID: string;
+  userId: string;
   source_account_id: string;
   source_account_name: string;
   destination_account_id: string;
@@ -20,7 +20,7 @@ class UserTransaction {
   updated_date: string;
 
   constructor(data: any) {
-    this.userID = data.userID;
+    this.userId = data.userId;
     this.source_account_id = data.source_account_id;
     this.source_account_name = data.source_account_name;
     this.destination_account_id = data.destination_account_id;
@@ -41,7 +41,7 @@ class UserTransaction {
 
   public static fromItem(item) {
     const data = {
-      userID: item.userID,
+      userId: item.userId,
       source_account_id: item.source_account_id,
       source_account_name: item.source_account_name,
       destination_account_id: item.destination_account_id,

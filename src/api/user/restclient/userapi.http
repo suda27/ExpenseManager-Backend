@@ -18,7 +18,7 @@ POST http://localhost:3000/offline/api/em-get-user
 Content-Type: application/json
 
 {
-    "userID": "ac56ffa5-1c76-49d4-84a5-3a61423afc0b"
+    "userId": "ac56ffa5-1c76-49d4-84a5-3a61423afc0b"
 }
 
 ### update user data
@@ -27,7 +27,7 @@ PUT http://localhost:3000/offline/api/em-get-user
 Content-Type: application/json
 
 {
-    "userID": "5a52489c-04f1-48d1-b90f-c3a7880eb168",
+    "userId": "5a52489c-04f1-48d1-b90f-c3a7880eb168",
     "name":"Subhalakshmi Ravichandran",
     "profile_pic":"https://subha.com",
     "currency":"AED",
@@ -40,7 +40,7 @@ DELETE  http://localhost:3000/offline/api/em-delete-user
 Content-Type: application/json
 
 {
-    "userID": "ac56ffa5-1c76-49d4-84a5-3a61423afc0b",
+    "userId": "ac56ffa5-1c76-49d4-84a5-3a61423afc0b",
     "status":"INACTIVE"
 }
 

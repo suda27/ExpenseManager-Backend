@@ -3,7 +3,7 @@
         "TableName": "em_user",
         "KeySchema": [
             {
-                "AttributeName": "userID",
+                "AttributeName": "userId",
                 "KeyType": "HASH"
             },
             {
@@ -33,7 +33,7 @@
         ],
         "AttributeDefinitions": [
             {
-                "AttributeName": "userID",
+                "AttributeName": "userId",
                 "KeyType": "HASH"
             },
             {
