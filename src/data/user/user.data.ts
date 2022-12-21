@@ -47,24 +47,25 @@ class UserData {
   }
 
   async getUser(userDetails: User) {
-    logger.info("getUserByEmail method in UserData");
+    logger.info("getUser method in UserData");
     try {
       const params = {
         TableName: this.tableName,
-        Key: {
-          userId: userDetails.userId,
-          email: userDetails.email
-        },
+        KeyConditionExpression: "#userId = :userId and #email = :email",
         FilterExpression: "#status = :status",
         ExpressionAttributeNames: {
-          "#status": "status"
+          "#status": "status",
+          "#userId": "userId",
+          "#email": "email"
         },
         ExpressionAttributeValues: {
-          ":status": STAUS.ACTIVE
+          ":status": STAUS.ACTIVE,
+          ":email": userDetails.email,
+          ":userId": userDetails.userId
         }
       };
       console.log(params);
-      const data = await this.docClient.scan(params, (err, data) => {
+      const data = await this.docClient.query(params, (err, data) => {
         console.log("data", data);
         console.log("error", err);
       }).promise();
@@ -122,16 +123,15 @@ class UserData {
   async getUsersByID(userID: string) {
     const params = {
       TableName: this.tableName,
-      KeyConditionExpression: "#userID = :userID",
+      Key: { userID: userID },
 
       FilterExpression: "#status = :status",
       ExpressionAttributeNames: {
-        "#userID": "userID",
         "#status": "status"
       },
       ExpressionAttributeValues: {
         ":status": STAUS.ACTIVE,
-        ":userID": userID
+
       }
     };
     console.log(params)

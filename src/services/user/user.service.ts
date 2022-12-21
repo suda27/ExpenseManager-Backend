@@ -16,7 +16,7 @@ class UserService {
 
   //login user
   async loginUser(userDeatils: User) {
-    logger.info("createUser method of UserService", userDeatils);
+    logger.info("Login User method of UserService", userDeatils);
 
     /* Check if user already exists */
     const existingUser = await userData.getUser(userDeatils);

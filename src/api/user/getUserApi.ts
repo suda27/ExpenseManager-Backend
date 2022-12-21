@@ -14,9 +14,11 @@ export class getUserApi {
   static async handler(event: APIGatewayEvent): Promise<APIGatewayProxyResult> {
     return new Promise(async (resolve, reject) => {
       try {
+
+
         const userDeatils: User = JSON.parse(event.body);
         logger.info("At the getUserAPI ", userDeatils);
-        const response = await userService.getUserByEmail(userDeatils.email.toLowerCase());
+        const response = await userService.getUserById(userDeatils.userId);
         resolve(
           formatJSONResponse(
             response != null ? HTTP.SUCCESS : HTTP.BAD_REQUEST,

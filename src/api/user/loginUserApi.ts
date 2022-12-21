@@ -15,7 +15,7 @@ export class loginUserApi {
     return new Promise(async (resolve, reject) => {
       try {
         const userDeatils: User = JSON.parse(event.body);
-        logger.info("At the userAPI ", userDeatils);
+        logger.info("At the Login userAPI ", userDeatils);
         const response = await userService.loginUser(userDeatils);
         resolve(
           formatJSONResponse(
