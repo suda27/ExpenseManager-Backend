@@ -34,8 +34,8 @@ plugins:
 custom:
   projectname: em
   usertable: ${self:custom.projectname}-${sls:stage}-user
-  userAccountTable: ${self:custom.projectname}-${sls:stage}-user-account
-  userTransactionTable: ${self:custom.projectname}-${sls:stage}-user-transaction
+  userAccountTable: ${self:custom.projectname}-${sls:stage}-useraccount
+  userTransactionTable: ${self:custom.projectname}-${sls:stage}-usertransaction
 
   dynamodb:
     stages:
