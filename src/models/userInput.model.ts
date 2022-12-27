@@ -1,4 +1,5 @@
 import Currency from "./currency.model";
+import UserCategory from "./userCategory.model";
 
 class User {
   userId: string;
@@ -10,6 +11,8 @@ class User {
   created_date: string;
   updated_date: string;
   exp: number;
+  expenseCategory: UserCategory[];
+  incomeCategory: UserCategory[];
 
   constructor(data: any) {
     this.userId = data.userId;
@@ -21,6 +24,9 @@ class User {
     this.created_date = data.created_date;
     this.updated_date = data.updated_date;
     this.exp = data.exp;
+    this.expenseCategory = data.expenseCategory;
+    this.incomeCategory = data.incomeCategory;
+
   }
 
   public static fromItem(item) {
@@ -33,7 +39,9 @@ class User {
       status: item.status,
       created_date: item.created_date,
       updated_date: item.updated_date,
-      exp: item.exp
+      exp: item.exp,
+      expenseCategory: item.expenseCategory,
+      incomeCategory: item.incomeCategory
     };
     const user = new User(data);
     return user;

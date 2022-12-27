@@ -21,6 +21,7 @@ class UserData {
       logger.info("User data persisted successfuly");
       return userDeatils;
     } catch (error) {
+      console.log(error)
       logger.error("Error occured while persisting data", error);
       throw Error(
         `There was an error while persisting data to ${this.tableName}`
@@ -35,6 +36,7 @@ class UserData {
         TableName: this.tableName,
         Item: userDeatils
       };
+
       await this.docClient.put(initialParams).promise();
       logger.info("User data updated successfuly");
       return userDeatils;
@@ -67,7 +69,6 @@ class UserData {
       console.log(params);
       const data = await this.docClient.query(params, (err, data) => {
         console.log("data", data);
-        console.log("error", err);
       }).promise();
       if (!data || !data.Items.length) {
         logger.info("No data found");

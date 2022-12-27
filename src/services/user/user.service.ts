@@ -5,6 +5,7 @@ import logger from "../../utils/logger";
 import { v4 as uuidv4 } from "uuid";
 import userData from "../../data/user/user.data";
 import { STAUS } from "../../constants/application.constant";
+import { loadDefaultExpenseCategoryForUser } from "../../helper/user.helper";
 
 
 class UserService {
@@ -26,7 +27,7 @@ class UserService {
       userDeatils.status = STAUS.ACTIVE;
       const updateUser: User = constructUpdateUserDetailsData(
         existingUser,
-        userDeatils
+        existingUser // sending the same existing user as an new user arguemnt for Login service alone
       );
       try {
         /* update user detials */
@@ -44,6 +45,8 @@ class UserService {
     userDeatils.created_date = new Date().toLocaleString();
     userDeatils.updated_date = new Date().toLocaleString();
     userDeatils.status = STAUS.ACTIVE;
+    userDeatils.expenseCategory = loadDefaultExpenseCategoryForUser();
+    userDeatils.incomeCategory = loadDefaultExpenseCategoryForUser();
     // userDeatils.userId = uuidv4(); -- Since google send the userId, we don't generate anymore
 
     try {
@@ -197,6 +200,11 @@ function constructUpdateUserDetailsData(
         : userDeatils.status,
     created_date: existingUser.created_date,
     updated_date: new Date().toLocaleString(),
-    exp: existingUser.exp
+    exp: existingUser.exp,
+    expenseCategory: existingUser.expenseCategory === userDeatils.expenseCategory && !userDeatils.expenseCategory ?
+      existingUser.expenseCategory : userDeatils.expenseCategory,
+    incomeCategory: existingUser.incomeCategory === userDeatils.incomeCategory && !userDeatils.incomeCategory ?
+      existingUser.incomeCategory : userDeatils.incomeCategory
+
   };
 }

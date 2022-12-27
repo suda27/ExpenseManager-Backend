@@ -180,7 +180,7 @@ resources:
             KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST
 
-    EMUSERACCOUNTTABLE:
+    EMUSERACCOUNTTABLEUPDATED:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.userAccountTable}
@@ -196,7 +196,7 @@ resources:
             KeyType: "RANGE"
         BillingMode: PAY_PER_REQUEST
 
-    EMUSERTRANSACTIONTABLE:
+    EMUSERTRANSACTIONTABLEUPDATED:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.userTransactionTable}
