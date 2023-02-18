@@ -799,6 +799,15 @@ class TransactionService {
     userTransaction: UserTransaction,
     sourceAccount: UserAccount
   ) {
+
+    if(sourceAccount.accountID==destinationAccount.accountID){
+      const response = {
+        destinationAccount,
+        sourceAccount,
+        userTransaction
+      };
+      return response;
+    }
     // Income Destination Calculation
     const userAfterIncomeDestinationAmount: number = this.calculatIncome(
       destinationAccount,

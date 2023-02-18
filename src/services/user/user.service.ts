@@ -5,7 +5,7 @@ import logger from "../../utils/logger";
 import { v4 as uuidv4 } from "uuid";
 import userData from "../../data/user/user.data";
 import { STAUS } from "../../constants/application.constant";
-import { loadDefaultExpenseCategoryForUser } from "../../helper/user.helper";
+import { loadDefaultExpenseCategoryForUser, loadDefaultIncomeCategoryForUser } from "../../helper/user.helper";
 
 
 class UserService {
@@ -46,7 +46,7 @@ class UserService {
     userDeatils.updated_date = new Date().toLocaleString();
     userDeatils.status = STAUS.ACTIVE;
     userDeatils.expenseCategory = loadDefaultExpenseCategoryForUser();
-    userDeatils.incomeCategory = loadDefaultExpenseCategoryForUser();
+    userDeatils.incomeCategory = loadDefaultIncomeCategoryForUser();
     // userDeatils.userId = uuidv4(); -- Since google send the userId, we don't generate anymore
 
     try {
@@ -58,6 +58,7 @@ class UserService {
       throw Error(`Error at the Data layer, Caught at User Service`);
     }
   }
+
   // Create User
   async createUser(userDeatils: User) {
     logger.info("createUser method of UserService", userDeatils);

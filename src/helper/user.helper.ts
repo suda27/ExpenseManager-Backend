@@ -54,3 +54,42 @@ export const loadDefaultExpenseCategoryForUser = () => {
 
     return data;
 }
+
+export const loadDefaultIncomeCategoryForUser = () => {
+
+    const data: UserCategory[] = [{
+
+        categoryId: uuidv4(),
+        categoryName: "Salary",
+        subCategory: null,
+
+    },
+    {
+        categoryId: uuidv4(),
+        categoryName: "Owes",
+        subCategory: null
+    },
+    {
+        categoryId: uuidv4(),
+        categoryName: "Other",
+        subCategory: null
+    },
+    {
+        categoryId: uuidv4(),
+        categoryName: "Allowance",
+        subCategory: null
+    },
+    {
+        categoryId: uuidv4(),
+        categoryName: "Refund",
+        subCategory: null
+    },
+    {
+        categoryId: uuidv4(),
+        categoryName: "Credit Interest",
+        subCategory: null
+    }
+    ]
+
+    return data;
+}

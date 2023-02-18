@@ -1,4 +1,5 @@
 import Currency from "./currency.model";
+import UserCategory from "./userCategory.model";
 
 class UserTransaction {
   userId: string;
@@ -11,8 +12,7 @@ class UserTransaction {
   transaction_amount: string;
   transaction_date: string;
   transaction_status: string;
-  category: string;
-  sub_category: string;
+  category: UserCategory;
   note: string;
   description: string;
   currency: Currency;
@@ -31,7 +31,6 @@ class UserTransaction {
     this.transaction_date = data.transaction_date;
     this.transaction_status = data.transaction_status;
     this.category = data.category;
-    this.sub_category = data.sub_category;
     this.note = data.note;
     this.description = data.description;
     this.currency = data.currency;
@@ -52,7 +51,6 @@ class UserTransaction {
       transaction_date: item.transaction_date,
       transaction_status: item.transaction_status,
       category: item.category,
-      sub_category: item.sub_category,
       note: item.note,
       description: item.description,
       currency: item.currency,

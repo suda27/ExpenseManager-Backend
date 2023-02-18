@@ -173,7 +173,6 @@ class TransactionData {
               #transaction_amount = :transaction_amount,
               #transaction_date = :transaction_date,
               #category = :category,
-              #sub_category = :sub_category,
               #note = :note,
               #description = :description,
               #updated_date = :updated_date
@@ -187,7 +186,6 @@ class TransactionData {
           "#transaction_amount": "transaction_amount",
           "#transaction_date": "transaction_date",
           "#category": "category",
-          "#sub_category": "sub_category",
           "#note": "note",
           "#description": "description",
           "#updated_date": "updated_date"
@@ -201,7 +199,6 @@ class TransactionData {
           ":transaction_amount": userTransaction.transaction_amount,
           ":transaction_date": userTransaction.transaction_date,
           ":category": userTransaction.category,
-          ":sub_category": userTransaction.sub_category,
           ":note": userTransaction.note,
           ":description": userTransaction.description,
           ":updated_date": new Date().toLocaleString()
