@@ -42,8 +42,8 @@ class UserService {
 
     /* Set attributes Created_date, Status and generate userId */
     userDeatils.email = userDeatils.email.toLowerCase();
-    userDeatils.created_date = new Date().toLocaleString();
-    userDeatils.updated_date = new Date().toLocaleString();
+    userDeatils.created_date = new Date().toISOString();
+    userDeatils.updated_date = new Date().toISOString();
     userDeatils.status = STAUS.ACTIVE;
     userDeatils.expenseCategory = loadDefaultExpenseCategoryForUser();
     userDeatils.incomeCategory = loadDefaultIncomeCategoryForUser();
@@ -73,8 +73,8 @@ class UserService {
 
     /* Set attributes Created_date, Status and generate userId */
     userDeatils.email = userDeatils.email.toLowerCase();
-    userDeatils.created_date = new Date().toLocaleString();
-    userDeatils.updated_date = new Date().toLocaleString();
+    userDeatils.created_date = new Date().toISOString();
+    userDeatils.updated_date = new Date().toISOString();
     userDeatils.status = STAUS.ACTIVE;
     userDeatils.userId = uuidv4();
 
@@ -200,7 +200,7 @@ function constructUpdateUserDetailsData(
         ? existingUser.status
         : userDeatils.status,
     created_date: existingUser.created_date,
-    updated_date: new Date().toLocaleString(),
+    updated_date: new Date().toISOString(),
     exp: existingUser.exp,
     expenseCategory: existingUser.expenseCategory === userDeatils.expenseCategory && !userDeatils.expenseCategory ?
       existingUser.expenseCategory : userDeatils.expenseCategory,

@@ -31,8 +31,8 @@ class UserAccountService {
     }
 
     /* Set attributes account_created_date,account_updated_date, Status and generated AccountID */
-    userAccountDetails.account_created_date = new Date().toLocaleString();
-    userAccountDetails.account_updated_date = new Date().toLocaleString();
+    userAccountDetails.account_created_date = new Date().toISOString();
+    userAccountDetails.account_updated_date = new Date().toISOString();
     userAccountDetails.account_status = STAUS.ACTIVE;
     userAccountDetails.accountID = uuidv4();
 

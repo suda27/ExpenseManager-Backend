@@ -449,6 +449,7 @@ class TransactionService {
   async addTransaction(userTransaction: UserTransaction) {
     logger.info("addTransaction method of TransactionService", userTransaction);
 
+    
     /* Check if user exists */
     const existingUser = await userService.getUserById(userTransaction.userId);
     if (!existingUser) {
@@ -887,8 +888,8 @@ class TransactionService {
 
   private generateUserTransactionID(userTransaction: UserTransaction) {
     userTransaction.transactionID = uuidv4();
-    userTransaction.created_date = new Date().toLocaleString();
-    userTransaction.updated_date = new Date().toLocaleString();
+    userTransaction.created_date = new Date().toISOString();
+    userTransaction.updated_date = new Date().toISOString();
   }
 
   private calculatExpense(account, userTransaction) {

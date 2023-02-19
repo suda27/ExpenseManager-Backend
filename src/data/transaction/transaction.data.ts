@@ -5,6 +5,7 @@ import logger from "../../utils/logger";
 import { STAUS } from "../../constants/application.constant";
 import UserTransaction from "../../models/userTransaction.model";
 import UserAccount from "../../models/userAccount.model";
+import { convertDateToStandardFormat } from "../../utils/dateUtils";
 
 class TransactionData {
   constructor(
@@ -15,9 +16,13 @@ class TransactionData {
   async addTransaction(userTransaction: UserTransaction) {
     logger.info("addTransaction method in TransactionData");
     try {
+ 
+      const updatedUserTransaction = {...userTransaction, 
+        transaction_date:convertDateToStandardFormat(userTransaction.transaction_date)
+      }
       const initialParams = {
         TableName: this.tableName,
-        Item: userTransaction
+        Item: updatedUserTransaction
       };
       await this.docClient
         .put(initialParams, function(err, data) {
@@ -29,7 +34,7 @@ class TransactionData {
         })
         .promise();
       logger.info("User transaction data persisted successfuly");
-      return userTransaction;
+      return updatedUserTransaction;
     } catch (error) {
       logger.error("Error occured while persisting data", error);
       throw Error(
@@ -201,7 +206,7 @@ class TransactionData {
           ":category": userTransaction.category,
           ":note": userTransaction.note,
           ":description": userTransaction.description,
-          ":updated_date": new Date().toLocaleString()
+          ":updated_date": new Date().toISOString()
         }
       };
 

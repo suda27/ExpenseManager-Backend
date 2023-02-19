@@ -61,7 +61,7 @@ class UserAccountData {
         ExpressionAttributeValues: {
           ":account_description": userAccountDeatils.account_description,
           ":account_group": userAccountDeatils.account_group,
-          ":account_updated_date": new Date().toLocaleString(),
+          ":account_updated_date": new Date().toISOString(),
           ":account_amount": userAccountDeatils.account_amount,
           ":account_status": userAccountDeatils.account_status,
           ":account_name": userAccountDeatils.account_name
