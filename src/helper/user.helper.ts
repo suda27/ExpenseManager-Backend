@@ -33,7 +33,7 @@ export const loadDefaultExpenseCategoryForUser = () => {
     },
     {
         categoryId: uuidv4(),
-        categoryName: "Socail Life",
+        categoryName: "Social Life",
         subCategory: [{
             categoryId: uuidv4(),
             categoryName: "Meet Up",
@@ -48,7 +48,7 @@ export const loadDefaultExpenseCategoryForUser = () => {
     {
         categoryId: uuidv4(),
         categoryName: "Snooker",
-        subCategory: null
+        subCategory: []
     }
     ]
 
@@ -61,33 +61,33 @@ export const loadDefaultIncomeCategoryForUser = () => {
 
         categoryId: uuidv4(),
         categoryName: "Salary",
-        subCategory: null,
+        subCategory: [],
 
     },
     {
         categoryId: uuidv4(),
         categoryName: "Owes",
-        subCategory: null
+        subCategory: []
     },
     {
         categoryId: uuidv4(),
         categoryName: "Other",
-        subCategory: null
+        subCategory: []
     },
     {
         categoryId: uuidv4(),
         categoryName: "Allowance",
-        subCategory: null
+        subCategory: []
     },
     {
         categoryId: uuidv4(),
         categoryName: "Refund",
-        subCategory: null
+        subCategory: []
     },
     {
         categoryId: uuidv4(),
         categoryName: "Credit Interest",
-        subCategory: null
+        subCategory: []
     }
     ]
 
