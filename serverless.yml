@@ -161,6 +161,14 @@ functions:
           path: /api/em-update-single-transaction
           method: PUT
           cors: true
+  deleteTransactionApi:
+    handler: src/api/transaction/deleteTransactionApi.handler
+    name: ${self:custom.projectname}-${sls:stage}-delete-transaction
+    events:
+      - http:
+          path: /api/em-delete-transaction
+          method: DELETE
+          cors: true        
 
 resources:
   Resources:

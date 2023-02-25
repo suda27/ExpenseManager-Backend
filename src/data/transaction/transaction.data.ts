@@ -6,26 +6,28 @@ import { STAUS } from "../../constants/application.constant";
 import UserTransaction from "../../models/userTransaction.model";
 import UserAccount from "../../models/userAccount.model";
 import { convertDateToStandardFormat } from "../../utils/dateUtils";
+import { TRANSACTION_TYPE } from "../../constants/transaction.constant";
 
 class TransactionData {
   constructor(
     private readonly docClient: DocumentClient,
     private readonly tableName: string
-  ) {}
+  ) { }
 
   async addTransaction(userTransaction: UserTransaction) {
     logger.info("addTransaction method in TransactionData");
     try {
- 
-      const updatedUserTransaction = {...userTransaction, 
-        transaction_date:convertDateToStandardFormat(userTransaction.transaction_date)
+
+      const updatedUserTransaction = {
+        ...userTransaction,
+        transaction_date: convertDateToStandardFormat(userTransaction.transaction_date)
       }
       const initialParams = {
         TableName: this.tableName,
         Item: updatedUserTransaction
       };
       await this.docClient
-        .put(initialParams, function(err, data) {
+        .put(initialParams, function (err, data) {
           if (err) {
             console.log(err);
           } else {
@@ -60,7 +62,7 @@ class TransactionData {
         }
       };
       const data = await this.docClient
-        .scan(initialParams, function(err, data) {
+        .scan(initialParams, function (err, data) {
           if (err) {
             logger.error(err);
           }
@@ -102,7 +104,7 @@ class TransactionData {
         }
       };
       const data = await this.docClient
-        .scan(initialParams, function(err, data) {
+        .scan(initialParams, function (err, data) {
           if (err) {
             console.error(err);
           }
@@ -211,11 +213,55 @@ class TransactionData {
       };
 
       await this.docClient
-        .update(initialParams, function(err, data) {
+        .update(initialParams, function (err, data) {
           if (err) {
             console.log(err);
           } else {
             console.log("updated Succesfuly", data);
+          }
+        })
+        .promise();
+      logger.info("User Transaction data persisted successfully");
+      return userTransaction;
+    } catch (err) {
+      logger.error("Error occured while persisting data", err);
+      throw Error(
+        `There was an error while persisting data to ${this.tableName}`
+      );
+    }
+  }
+
+  async deleteUserTransaction(
+    userTransaction: UserTransaction
+  ) {
+    logger.info("deleteUserTransaction method in TransactionData");
+    try {
+      const initialParams: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+        TableName: this.tableName,
+        ConditionExpression: "attribute_exists(transactionID)",
+        Key: {
+          transactionID: userTransaction.transactionID
+        },
+        UpdateExpression: `SET
+              #transaction_status = :transaction_status,
+              #updated_date = :updated_date
+              `,
+        ExpressionAttributeNames: {
+          "#transaction_status": "transaction_status",
+          "#updated_date": "updated_date"
+        },
+        ExpressionAttributeValues: {
+          ":transaction_status": STAUS.INACTIVE,
+          ":updated_date": new Date().toISOString()
+        }
+      };
+
+      await this.docClient
+        .update(initialParams, function (err, data) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Deleted Succesfuly", data);
           }
         })
         .promise();
