@@ -25,7 +25,7 @@ export class fetchSingleTransactionApi {
           formatJSONResponse(
             response != null ? HTTP.SUCCESS : HTTP.BAD_REQUEST,
             response != null
-              ? "User Transaction Data Saved Successfully"
+              ? "User Transaction Data fetched Successfully"
               : "User / Account Doesn't Exist in the System",
             response
           )
