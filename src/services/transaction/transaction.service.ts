@@ -286,6 +286,17 @@ class TransactionService {
           existingTransaction.transaction_type == TRANSACTION_TYPE.TRANSFER &&
           updatedUserTransaction.transaction_type !=
           existingTransaction.transaction_type;
+
+
+        const checkIfSoruceAccountNotChangedAlongWithTansactionTypeFromTransferToIncomeOrExpense =
+          existingTransaction.source_account_id ==
+          updatedUserTransaction.source_account_id &&
+          updatedUserTransaction.transaction_type !=
+          TRANSACTION_TYPE.TRANSFER &&
+          existingTransaction.transaction_type == TRANSACTION_TYPE.TRANSFER &&
+          updatedUserTransaction.transaction_type !=
+          existingTransaction.transaction_type;
+
         // if source account not changed and transaction type is income/expense being modfied to vice-versa
         // XYZ Account : Income  ----> XYZ Account : Expense
         // XYZ Account : Expense  ----> XYZ Account : Income
@@ -427,6 +438,11 @@ class TransactionService {
           );
 
           return await this.sourceAccountChangedAlongWithTTfromTransferToIncomeOrExpense(
+            existingTransaction,
+            updatedUserTransaction
+          );
+        } else if (checkIfSoruceAccountNotChangedAlongWithTansactionTypeFromTransferToIncomeOrExpense) {
+          return await this.sourceAccountNotChangedAlongWithTTfromTransferToIncomeOrExpense(
             existingTransaction,
             updatedUserTransaction
           );
@@ -626,6 +642,43 @@ class TransactionService {
     );
     //Update new user source account amount detials
     await userAccountData.updateSingleUserAccount(newUserSourceAccount);
+    //Update transaction details
+    const updatedTransaction = await transactionData.updateUserTransactionForSameTransactionType(
+      updatedUserTransaction
+    );
+    return updatedTransaction;
+  }
+
+  private async sourceAccountNotChangedAlongWithTTfromTransferToIncomeOrExpense(existingTransaction: UserTransaction,
+    updatedUserTransaction: UserTransaction) {
+    const existingUserSourceAccount = await userAccountService.fetchSingleUserAccount(
+      existingTransaction.source_account_id
+    );
+    const existingUserDestinationAccount = await userAccountService.fetchSingleUserAccount(
+      existingTransaction.destination_account_id
+    );
+
+    existingUserDestinationAccount.account_amount = String(
+      Number(existingUserDestinationAccount.account_amount) -
+      Number(existingTransaction.transaction_amount)
+    );
+    existingUserSourceAccount.account_amount =
+      updatedUserTransaction.transaction_type === TRANSACTION_TYPE.EXPENSE
+        ? String(
+          Number(existingUserSourceAccount.account_amount) -
+          (Number(updatedUserTransaction.transaction_amount) - Number(existingTransaction.transaction_amount))
+        )
+        : String(
+          Number(existingUserSourceAccount.account_amount) +
+          Number(updatedUserTransaction.transaction_amount) + Number(existingTransaction.transaction_amount)
+        );
+    //Update existing user source account amount detials
+    await userAccountData.updateSingleUserAccount(existingUserSourceAccount);
+    //Update existing user Destination account amount detials
+    await userAccountData.updateSingleUserAccount(
+      existingUserDestinationAccount
+    );
+
     //Update transaction details
     const updatedTransaction = await transactionData.updateUserTransactionForSameTransactionType(
       updatedUserTransaction

@@ -253,19 +253,22 @@ class TransactionData {
         ExpressionAttributeValues: {
           ":transaction_status": STAUS.INACTIVE,
           ":updated_date": new Date().toISOString()
-        }
+        },
+        ReturnValues: 'ALL_NEW'
       };
 
-      await this.docClient
+      return await this.docClient
         .update(initialParams, function (err, data) {
           if (err) {
             console.log(err);
           } else {
-            console.log("Deleted Succesfuly", data);
+
+            logger.info("User Transaction data delted successfully", data.Attributes);
+            return data.Attributes
           }
         })
         .promise();
-      logger.info("User Transaction data persisted successfully");
+
       return userTransaction;
     } catch (err) {
       logger.error("Error occured while persisting data", err);
