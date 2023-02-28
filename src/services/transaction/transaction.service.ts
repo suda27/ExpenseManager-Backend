@@ -213,13 +213,16 @@ class TransactionService {
                 existingTransaction
               );
             } else {
-              // If account changed for Transfer Type
-              // If both source and Destination account has been changed
-              if (existingTransaction.source_account_id !=
+              const bothSourceAndDestinationAccountChangedWithSameTypeTransfer = existingTransaction.source_account_id !=
                 updatedUserTransaction.source_account_id
                 && existingTransaction.destination_account_id !=
-                updatedUserTransaction.destination_account_id) {
+                updatedUserTransaction.destination_account_id;
+              // If account changed for Transfer Type
 
+
+              // If both source and Destination account has been changed
+              if (bothSourceAndDestinationAccountChangedWithSameTypeTransfer) {
+                console.log('--------------->>both source account and desitnation account changed : Exisitng Type - Transfer, New type - Tarnsfer <<---------------')
                 return await this.sourceAccountChangedDestinationAccountChangedTypeTransfer(
                   existingTransaction, newUserSourceAccount, existingUserSourceAccount, updatedUserTransaction
                 )
@@ -229,10 +232,12 @@ class TransactionService {
                 existingTransaction.source_account_id !=
                 updatedUserTransaction.source_account_id
               ) {
+                console.log('--------------->>Only source account changed : Exisitng Type - Transfer, New type - Tarnsfer <<---------------')
                 return await this.sourceAccountChangedSameTransactionTypeTransfer(
                   existingUserSourceAccount,
                   updatedUserTransaction,
-                  newUserSourceAccount, existingTransaction
+                  newUserSourceAccount,
+                  existingTransaction
                 );
               }
 
@@ -241,6 +246,7 @@ class TransactionService {
                 existingTransaction.destination_account_id !=
                 updatedUserTransaction.destination_account_id
               ) {
+                console.log('--------------->>Only Destination account changed : Exisitng Type - Transfer, New type - Tarnsfer <<---------------')
                 return await this.destinationAccountChangedSameTransactionTypeTransfer(
                   existingTransaction,
                   updatedUserTransaction
@@ -638,10 +644,16 @@ class TransactionService {
     newUserSourceAccount.account_amount =
       updatedUserTransaction.transaction_type === TRANSACTION_TYPE.EXPENSE
         ? String(
-          Number(newUserSourceAccount.account_amount) -
-          Number(updatedUserTransaction.transaction_amount)
+          existingUserDestinationAccount.accountID === newUserSourceAccount.accountID ?
+           Number(existingUserDestinationAccount.account_amount) - Number(updatedUserTransaction.transaction_amount) 
+           : 
+            Number(newUserSourceAccount.account_amount) - Number(updatedUserTransaction.transaction_amount)
+
         )
         : String(
+          existingUserDestinationAccount.accountID === newUserSourceAccount.accountID ?
+          Number(existingUserDestinationAccount.account_amount) +
+          Number(updatedUserTransaction.transaction_amount):
           Number(newUserSourceAccount.account_amount) +
           Number(updatedUserTransaction.transaction_amount)
         );
@@ -825,17 +837,31 @@ class TransactionService {
     newUserSourceAccount: UserAccount,
     existingTransaction: UserTransaction
   ) {
+
+    const exisitngUserDestinationAccount = await userAccountService.fetchSingleUserAccount(
+      existingTransaction.destination_account_id
+    );
+
     existingUserSourceAccount.account_amount = String(
       Number(existingUserSourceAccount.account_amount) +
-      Number(updatedUserTransaction.transaction_amount)
+      Number(existingTransaction.transaction_amount)
     );
     newUserSourceAccount.account_amount = String(
       Number(newUserSourceAccount.account_amount) -
       Number(updatedUserTransaction.transaction_amount)
     );
-    //Update existing user account amount detials
+
+    exisitngUserDestinationAccount.account_amount = String(
+      Number(exisitngUserDestinationAccount.account_amount) -
+      (Number(existingTransaction.transaction_amount) - Number(updatedUserTransaction.transaction_amount))
+    )
+
+
+    //Update existing user source account amount detials
     await userAccountData.updateSingleUserAccount(existingUserSourceAccount);
-    //Update new user account amount detials
+    //Update existing user destination account amount detials
+    await userAccountData.updateSingleUserAccount(exisitngUserDestinationAccount);
+    //Update new user source account amount detials
     await userAccountData.updateSingleUserAccount(newUserSourceAccount);
     //Update transaction details
     const updatedTransaction = await transactionData.updateUserTransactionForSameTransactionType(
@@ -844,22 +870,31 @@ class TransactionService {
     return updatedTransaction;
   }
 
-  private async  sourceAccountChangedDestinationAccountChangedTypeTransfer(existingTransaction: UserTransaction, newUserSourceAccount: UserAccount, existingUserSourceAccount: UserAccount, updatedUserTransaction: UserTransaction) {
+  private async  sourceAccountChangedDestinationAccountChangedTypeTransfer(existingTransaction: UserTransaction,
+    newUserSourceAccount: UserAccount,
+    existingUserSourceAccount: UserAccount,
+    updatedUserTransaction: UserTransaction) {
+
+
+    console.log('sourceAccountChangedDestinationAccountChangedTypeTransfer')
+
     existingUserSourceAccount.account_amount = String(
       Number(existingUserSourceAccount.account_amount) +
-      Number(updatedUserTransaction.transaction_amount)
+      Number(existingTransaction.transaction_amount)
     );
-    console.log('sourceAccountChangedDestinationAccountChangedTypeTransfer')
+
     newUserSourceAccount.account_amount = String(
       Number(newUserSourceAccount.account_amount) -
       Number(updatedUserTransaction.transaction_amount)
     );
+
     //Update existing user account amount detials
     await userAccountData.updateSingleUserAccount(existingUserSourceAccount);
     //Update new user account amount detials
     await userAccountData.updateSingleUserAccount(newUserSourceAccount);
 
     console.log("Destination changed");
+
     const existingUserDestinationAccount = await userAccountData.fetchSingleUserAccount(
       existingTransaction.destination_account_id
     );
@@ -896,6 +931,11 @@ class TransactionService {
     const existingUserDestinationAccount = await userAccountData.fetchSingleUserAccount(
       existingTransaction.destination_account_id
     );
+
+    const existingUserSoruceAccount = await userAccountData.fetchSingleUserAccount(
+      existingTransaction.source_account_id
+    );
+
     const newUserDestinationAccount = await userAccountData.fetchSingleUserAccount(
       updatedUserTransaction.destination_account_id
     );
@@ -907,11 +947,23 @@ class TransactionService {
       Number(newUserDestinationAccount.account_amount) +
       Number(updatedUserTransaction.transaction_amount)
     );
-    //Update existing user account amount detials
+
+    existingUserSoruceAccount.account_amount = String(
+      Number(existingUserSoruceAccount.account_amount)
+      + Number(existingTransaction.transaction_amount)
+      - Number(updatedUserTransaction.transaction_amount))
+
+
+    //Update existing user source account amount detials
+    await userAccountData.updateSingleUserAccount(
+      existingUserSoruceAccount
+    );
+
+    //Update existing user destination account amount detials
     await userAccountData.updateSingleUserAccount(
       existingUserDestinationAccount
     );
-    //Update new user account amount detials
+    //Update new user destination account amount detials
     await userAccountData.updateSingleUserAccount(newUserDestinationAccount);
     //Update transaction details
     const updatedTransaction = await transactionData.updateUserTransactionForSameTransactionType(
