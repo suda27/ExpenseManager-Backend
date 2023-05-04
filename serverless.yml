@@ -132,7 +132,6 @@ functions:
   fetchAllUserTransactionApi:
     handler: src/api/transaction/fetchAllUserTransactionApi.handler
     name: ${self:custom.projectname}-${sls:stage}-fetch-user-transactions
-    provisionedConcurrency: 5
     events:
       - http:
           path: /api/em-fetch-user-transactions
